@@ -3,7 +3,14 @@ from decimal import Decimal
 
 from sqlalchemy import func, select
 
-from app.core.enums import FindingStatus, PersistenceState, RemediationRisk, ScanStatus
+import app.scanner.engine as engine_module
+from app.core.enums import (
+    DetectorType,
+    FindingStatus,
+    PersistenceState,
+    RemediationRisk,
+    ScanStatus,
+)
 from app.models import AppSettings
 from app.persistence.models import Finding, Scan
 from app.pricing.service import PricingService
@@ -107,6 +114,52 @@ def test_pricing_warnings_are_deduplicated_in_region_coverage(
     warnings = scan.coverage["us-east-1"]["warnings"]
     assert len(warnings) == 1
     assert "ProviderTransientError" in warnings[0]
+
+
+def test_unexpected_detector_error_marks_cell_failed(
+    session_factory, fixed_clock, demo_dataset, monkeypatch
+) -> None:
+    class BrokenDetector:
+        detector_type = DetectorType.UNATTACHED_EBS_VOLUME
+
+        def scan(self, provider, region, context):
+            raise RuntimeError("detector bug")
+
+    monkeypatch.setattr(engine_module, "DETECTORS", [BrokenDetector()])
+    scan_id = build_engine(session_factory, fixed_clock, demo_dataset).run_scan(["us-east-1"]).id
+    scan = reload_scan(session_factory, scan_id)
+    cell = scan.coverage["us-east-1"]["detectors"]["unattached_ebs_volume"]
+    assert cell["status"] == "failed"
+    assert cell["error_code"] == "internal_error"
+    assert cell["message"] == "RuntimeError: detector bug"
+
+
+def test_existing_running_scan_id_is_reused(session_factory, fixed_clock, demo_dataset) -> None:
+    with session_factory() as session:
+        existing = Scan(
+            mode="demo",
+            started_at=fixed_clock.now(),
+            status="running",
+            requested_regions=["us-east-1"],
+            completed_regions=[],
+            partial_regions=[],
+            failed_regions=[],
+            skipped_regions=[],
+            coverage={},
+            errors=[],
+            created_at=fixed_clock.now(),
+        )
+        session.add(existing)
+        session.commit()
+        scan_id = existing.id
+        started_at = existing.started_at
+    result = build_engine(session_factory, fixed_clock, demo_dataset).run_scan(
+        ["us-east-1"], scan_id=scan_id
+    )
+    assert result.id == scan_id
+    assert result.started_at == started_at
+    with session_factory() as session:
+        assert session.scalar(select(func.count()).select_from(Scan)) == 1
 
 
 def test_identity_credentials_failure_records_failed_scan(

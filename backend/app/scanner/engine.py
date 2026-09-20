@@ -1,8 +1,10 @@
+import logging
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
+from uuid import UUID
 
 from sqlalchemy.orm import Session
 
@@ -32,6 +34,7 @@ from app.providers.memoizing import ScanScopedProvider
 from app.scanner.history import reconcile
 
 SessionFactory = Callable[[], Session]
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -128,6 +131,19 @@ class ScanEngine:
                 cells.append(
                     DetectionCell(detector.detector_type, DetectorCoverageStatus.FAILED, [], error)
                 )
+            except Exception as exc:
+                logger.exception(
+                    "Detector %s failed unexpectedly in %s",
+                    detector.detector_type.value,
+                    region,
+                )
+                error = {
+                    "code": "internal_error",
+                    "message": f"{type(exc).__name__}: {exc}",
+                }
+                cells.append(
+                    DetectionCell(detector.detector_type, DetectorCoverageStatus.FAILED, [], error)
+                )
         if resolver.warning is not None:
             warnings.append(resolver.warning)
         statuses = {cell.status for cell in cells}
@@ -142,28 +158,41 @@ class ScanEngine:
             status = RegionCoverageStatus.FAILED
         return RegionDetection(region, status, cells, _deduplicate(warnings))
 
-    def run_scan(self, requested_regions: list[str] | None = None) -> Scan:
-        observed_at = self._clock.now()
+    def run_scan(
+        self,
+        requested_regions: list[str] | None = None,
+        *,
+        scan_id: UUID | None = None,
+    ) -> Scan:
         provider = ScanScopedProvider(self._provider)
         with self._session_factory() as session:
-            scan = Scan(
-                mode=provider.mode.value,
-                account_id=None,
-                principal_arn=None,
-                seeded=False,
-                started_at=observed_at,
-                status=ScanStatus.RUNNING.value,
-                requested_regions=requested_regions or [],
-                completed_regions=[],
-                partial_regions=[],
-                failed_regions=[],
-                skipped_regions=[],
-                coverage={},
-                errors=[],
-                created_at=observed_at,
-            )
-            session.add(scan)
-            session.flush()
+            scan: Scan
+            if scan_id is None:
+                observed_at = self._clock.now()
+                scan = Scan(
+                    mode=provider.mode.value,
+                    account_id=None,
+                    principal_arn=None,
+                    seeded=False,
+                    started_at=observed_at,
+                    status=ScanStatus.RUNNING.value,
+                    requested_regions=requested_regions or [],
+                    completed_regions=[],
+                    partial_regions=[],
+                    failed_regions=[],
+                    skipped_regions=[],
+                    coverage={},
+                    errors=[],
+                    created_at=observed_at,
+                )
+                session.add(scan)
+                session.flush()
+            else:
+                existing_scan = session.get(Scan, scan_id)
+                if existing_scan is None or existing_scan.status != ScanStatus.RUNNING.value:
+                    raise ValueError("scan_id must identify an existing running scan")
+                scan = existing_scan
+                observed_at = scan.started_at
             try:
                 identity = provider.get_identity()
             except ProviderCredentialsError as exc:
@@ -188,6 +217,8 @@ class ScanEngine:
 
             if requested_regions is not None:
                 regions = list(dict.fromkeys(requested_regions))
+            elif scan_id is not None and scan.requested_regions:
+                regions = list(scan.requested_regions)
             elif self._settings.regions is not None:
                 regions = self._settings.regions
             else:

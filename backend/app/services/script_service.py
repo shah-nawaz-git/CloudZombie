@@ -57,9 +57,23 @@ class ScriptService:
     def bulk(self, findings: list[Finding]) -> BulkScriptResult:
         included_findings: list[Finding] = []
         skipped: list[dict[str, str]] = []
+        first_account_id: str | None = None
         for finding in findings:
             kind, reason = script_kind_for(finding)
             if kind == ScriptKind.GUARDED_REMEDIATION and reason is None:
+                if first_account_id is None:
+                    first_account_id = finding.account_id
+                if finding.account_id != first_account_id:
+                    skipped.append(
+                        {
+                            "finding_id": str(finding.id),
+                            "reason": (
+                                "Finding belongs to a different AWS account than the first "
+                                "eligible finding."
+                            ),
+                        }
+                    )
+                    continue
                 included_findings.append(finding)
             else:
                 skipped.append(

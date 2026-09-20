@@ -1,18 +1,26 @@
 from datetime import UTC, datetime
 
 import click
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.clock import SystemClock
 from app.core.config import Settings
 from app.models import AppSettings
 from app.persistence.database import create_database_engine
-from app.persistence.models import Base, Finding
+from app.persistence.models import (
+    Base,
+    Finding,
+    FindingObservation,
+    PricingCache,
+    Scan,
+    SettingsRecord,
+)
 from app.pricing.cache import DbPricingCache
 from app.pricing.service import PricingService
 from app.providers.errors import ProviderCredentialsError, ProviderError
 from app.scanner.engine import ScanEngine
+from app.services.demo_seeder import DemoSeeder
 from app.services.provider_factory import build_provider
 from app.services.settings_service import SettingsService
 
@@ -93,6 +101,42 @@ def _print_findings(session: Session, now: datetime) -> None:
 @click.group()
 def cloudzombie() -> None:
     """CloudZombie cleanup planning commands."""
+
+
+@cloudzombie.group()
+def demo() -> None:
+    """Manage deterministic demo history."""
+
+
+@demo.command("seed")
+def demo_seed() -> None:
+    environment, factory, _, clock = _runtime()
+    if environment.cloudzombie_mode.value != "demo":
+        raise click.ClickException("Demo seeding is available only in demo mode.")
+    seeded = DemoSeeder(factory, environment, clock).seed_if_empty()
+    click.echo("Demo history seeded." if seeded else "Demo history already exists.")
+
+
+@demo.command("reset")
+@click.option("--yes", is_flag=True, help="Confirm deletion of all application data.")
+@click.option("--force", is_flag=True, help="Allow reset while configured for live mode.")
+def demo_reset(yes: bool, force: bool) -> None:
+    if not yes:
+        raise click.ClickException("Refusing to reset without --yes.")
+    environment, factory, _, _ = _runtime()
+    if environment.cloudzombie_mode.value == "live" and not force:
+        raise click.ClickException("Refusing to reset live mode without --force.")
+    with factory() as session:
+        for model in (
+            FindingObservation,
+            Finding,
+            Scan,
+            PricingCache,
+            SettingsRecord,
+        ):
+            session.execute(delete(model))
+        session.commit()
+    click.echo("CloudZombie data reset.")
 
 
 @cloudzombie.command()

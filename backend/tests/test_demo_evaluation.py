@@ -3,6 +3,7 @@ from datetime import timedelta
 from sqlalchemy import select
 
 from app.core.clock import FixedClock
+from app.core.config import Settings
 from app.core.enums import (
     DetectorType,
     FindingStatus,
@@ -15,6 +16,7 @@ from app.persistence.models import Finding, Scan
 from app.pricing.service import PricingService
 from app.providers.demo import DemoProvider
 from app.scanner.engine import ScanEngine
+from app.services.demo_seeder import DemoSeeder
 
 
 def run_step(session_factory, dataset, settings, anchor, step, observed_at):
@@ -35,18 +37,13 @@ def ids(findings, detector, status=FindingStatus.OPEN):
 def test_demo_timeline_evaluates_real_history(session_factory, fixed_clock, demo_dataset) -> None:
     anchor = fixed_clock.now()
     settings = AppSettings(pricing_mode="fallback_only")
-    scans = []
-    for step, days_before in ((1, 21), (2, 14), (3, 7), (4, 2)):
-        scans.append(
-            run_step(
-                session_factory,
-                demo_dataset,
-                settings,
-                anchor,
-                step,
-                anchor - timedelta(days=days_before),
-            )
-        )
+    environment = Settings(CLOUDZOMBIE_MODE="demo")
+    assert DemoSeeder(session_factory, environment, fixed_clock).seed_if_empty() is True
+    assert DemoSeeder(session_factory, environment, fixed_clock).seed_if_empty() is False
+    with session_factory() as session:
+        scans = list(session.scalars(select(Scan).order_by(Scan.started_at)))
+    assert len(scans) == 4
+    assert all(scan.seeded for scan in scans)
 
     with session_factory() as session:
         findings = list(session.scalars(select(Finding)))

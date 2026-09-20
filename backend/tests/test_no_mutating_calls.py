@@ -13,6 +13,8 @@ _ALLOWED_HELPERS = {
     "create_database_engine(",
     "create_client(",
     "create_all(",
+    "create_app(",
+    "create_scan(",
 }
 
 

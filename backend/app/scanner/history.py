@@ -172,6 +172,7 @@ def reconcile(
                 persistence_state_at_observation=finding.persistence_state,
                 remediation_risk_at_observation=finding.remediation_risk,
                 estimated_monthly_cost=finding.estimated_monthly_cost,
+                cost_confidence_at_observation=finding.cost_confidence,
                 evidence=finding.evidence,
             )
         )

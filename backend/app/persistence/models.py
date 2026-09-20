@@ -146,6 +146,9 @@ class FindingObservation(Base):
     persistence_state_at_observation: Mapped[str] = mapped_column(String(32))
     remediation_risk_at_observation: Mapped[str] = mapped_column(String(16))
     estimated_monthly_cost: Mapped[Decimal | None] = mapped_column(Numeric(12, 4), nullable=True)
+    cost_confidence_at_observation: Mapped[str] = mapped_column(
+        String(16), default=CostConfidence.UNAVAILABLE.value
+    )
     evidence: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
 
     finding: Mapped[Finding] = relationship(back_populates="observations")

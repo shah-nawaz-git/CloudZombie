@@ -1,0 +1,12 @@
+# Live AWS override. The application remains read-only; credentials are resolved by boto3.
+services:
+  backend:
+    environment:
+      CLOUDZOMBIE_MODE: live
+      AWS_PROFILE: ${AWS_PROFILE:-}
+      AWS_REGION_SELECTION: ${AWS_REGION_SELECTION:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+    volumes:
+      - ${HOME}/.aws:/home/app/.aws:ro
