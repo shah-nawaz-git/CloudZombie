@@ -13,6 +13,15 @@ from app.providers.base import Attachment, Volume
 from app.providers.demo import DemoDataset, load_demo_dataset
 
 
+def pytest_addoption(parser) -> None:
+    parser.addoption(
+        "--update-golden",
+        action="store_true",
+        default=False,
+        help="rewrite remediation script golden files",
+    )
+
+
 @pytest.fixture
 def session_factory() -> Iterator[sessionmaker[Session]]:
     database_url = os.getenv("TEST_DATABASE_URL")

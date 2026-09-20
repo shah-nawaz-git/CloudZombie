@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -u
+
+printf '%s\n' "$*" >> "$FAKE_LOG"
+service="${1:-}"
+operation="${2:-}"
+shift 2 || true
+
+if [ "$service" = "sts" ] && [ "$operation" = "get-caller-identity" ]; then
+  printf '%s\n' "${FAKE_ACCOUNT:-123456789012}"
+  exit 0
+fi
+
+query=""
+output=""
+volume_id=""
+allocation_id=""
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --query)
+      query="${2:-}"
+      shift 2
+      ;;
+    --output)
+      output="${2:-}"
+      shift 2
+      ;;
+    --volume-ids|--volume-id)
+      volume_id="${2:-}"
+      shift 2
+      ;;
+    --allocation-ids|--allocation-id)
+      allocation_id="${2:-}"
+      shift 2
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+
+if [ "$service" != "ec2" ]; then
+  exit 0
+fi
+
+case "$operation" in
+  describe-volumes)
+    if [ "${FAKE_VOLUME_MISSING:-0}" = "1" ]; then
+      exit 255
+    fi
+    case "$query" in
+      *"Volumes[0].State"*)
+        if [ -n "${FAKE_CHANGED_VOLUME_ID:-}" ] && [ "$volume_id" != "$FAKE_CHANGED_VOLUME_ID" ]; then
+          printf '%s\n' "available"
+        else
+          printf '%s\n' "${FAKE_VOLUME_STATE:-available}"
+        fi
+        ;;
+      *"length(Volumes[0].Attachments)"*)
+        printf '%s\n' "${FAKE_ATTACHMENTS:-0}"
+        ;;
+      *"aws:cloudformation:stack-name"*)
+        printf '%s\n' "${FAKE_STACK_NAME:-None}"
+        ;;
+      *"Tags[?Key=="*)
+        printf '%s\n' "${FAKE_IGNORE_VALUE:-None}"
+        ;;
+      *)
+        if [ "$output" = "table" ]; then printf '%s\n' "TABLE"; fi
+        ;;
+    esac
+    ;;
+  describe-addresses)
+    if [ "${FAKE_ADDRESS_MISSING:-0}" = "1" ]; then
+      exit 255
+    fi
+    case "$query" in
+      *"AssociationId"*) printf '%s\n' "${FAKE_ASSOCIATION_ID:-None}" ;;
+      *"InstanceId"*) printf '%s\n' "${FAKE_INSTANCE_ID:-None}" ;;
+      *"NetworkInterfaceId"*) printf '%s\n' "${FAKE_ENI_ID:-None}" ;;
+      *"aws:cloudformation:stack-name"*) printf '%s\n' "${FAKE_STACK_NAME:-None}" ;;
+      *"Tags[?Key=="*) printf '%s\n' "${FAKE_IGNORE_VALUE:-None}" ;;
+      *) if [ "$output" = "table" ]; then printf '%s\n' "TABLE"; fi ;;
+    esac
+    ;;
+  create-snapshot)
+    printf '%s\n' "snap-0fake0000000000001"
+    ;;
+  wait|delete-volume|release-address)
+    ;;
+  *)
+    if [ "$output" = "table" ]; then printf '%s\n' "TABLE"; fi
+    ;;
+esac

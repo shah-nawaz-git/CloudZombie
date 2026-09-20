@@ -15,6 +15,7 @@ from app.core.enums import (
 )
 
 SAFE_TAG_PATTERN = r"^[A-Za-z0-9_.:/+@-]{1,128}$"
+SAFE_TAG_VALUE_PATTERN = r"^[A-Za-z0-9_.:/+@-]{1,256}$"
 
 
 class AppSettings(BaseModel):
@@ -29,7 +30,7 @@ class AppSettings(BaseModel):
     )
     min_consecutive_observations: int = Field(default=2, ge=1)
     ignore_tag_key: str = Field(default="cloudzombie:ignore", pattern=SAFE_TAG_PATTERN)
-    ignore_tag_value: str = Field(default="true", pattern=SAFE_TAG_PATTERN)
+    ignore_tag_value: str = Field(default="true", pattern=SAFE_TAG_VALUE_PATTERN)
     ignore_reason_tag_key: str = Field(default="cloudzombie:reason", pattern=SAFE_TAG_PATTERN)
     pricing_mode: Literal["auto", "fallback_only", "disabled"] = "auto"
     pricing_cache_ttl_seconds: int = Field(default=86400, ge=0)
