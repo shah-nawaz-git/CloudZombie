@@ -1,0 +1,24 @@
+{
+  "regions": null,
+  "thresholds_days": {
+    "unattached_ebs_volume": 7,
+    "unassociated_elastic_ip": 1,
+    "stopped_ec2_instance": 7,
+    "snapshot_missing_source_volume": 30
+  },
+  "min_consecutive_observations": 2,
+  "ignore_tag_key": "cloudzombie:ignore",
+  "ignore_tag_value": "true",
+  "ignore_reason_tag_key": "cloudzombie:reason",
+  "pricing_mode": "fallback_only",
+  "pricing_cache_ttl_seconds": 86400,
+  "max_region_concurrency": 3,
+  "demo_anchor_at": "2026-09-20T09:22:10.780886Z",
+  "mode": "demo",
+  "detector_thresholds_help": {
+    "unattached_ebs_volume": "Days observed before an unattached EBS volume becomes persistent.",
+    "unassociated_elastic_ip": "Days observed before an unassociated Elastic IP becomes persistent.",
+    "stopped_ec2_instance": "Observation threshold for stopped EC2 instances.",
+    "snapshot_missing_source_volume": "Observation threshold for snapshots with deleted source volumes."
+  }
+}

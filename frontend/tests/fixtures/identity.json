@@ -1,0 +1,8 @@
+{
+  "mode": "demo",
+  "account_id": "123456789012",
+  "principal_arn": "arn:aws:sts::123456789012:assumed-role/CloudZombieDemo/session",
+  "identity_type": "assumed-role",
+  "verified_at": "2026-09-20T09:22:10.930449Z",
+  "error": null
+}

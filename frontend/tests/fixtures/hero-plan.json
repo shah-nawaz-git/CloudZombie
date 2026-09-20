@@ -1,0 +1,76 @@
+{
+  "finding_id": "13b515ac-5931-451b-85a5-7cef6854150d",
+  "resource_id": "vol-0a1b2c3d4e5f60001",
+  "resource_type": "ebs_volume",
+  "detector_type": "unattached_ebs_volume",
+  "account_id": "123456789012",
+  "region": "eu-central-1",
+  "plain_language_summary": "This 500 GiB gp3 volume is currently in state 'available' with no attachments. CloudZombie first observed this condition on 2026-08-30 (21 days ago) and has seen it in 4 scan(s). The resource itself was created on 2026-03-24 (180 days ago); resource age is not evidence of how long the condition has existed.",
+  "reason": "Guarded remediation is available.",
+  "evidence": {
+    "volume_id": "vol-0a1b2c3d4e5f60001",
+    "availability_zone": "eu-central-1a",
+    "state": "available",
+    "volume_type": "gp3",
+    "size_gib": 500,
+    "iops": 3000,
+    "throughput_mibps": 125,
+    "encrypted": true,
+    "created_at": "2026-03-24T09:22:10.780886+00:00",
+    "origin_snapshot_id": null,
+    "attachment_count": 0,
+    "tags": {
+      "Name": "analytics-cache"
+    },
+    "name_tag": "analytics-cache"
+  },
+  "observation_history": {
+    "resource_created_at": "2026-03-24T09:22:10.780886Z",
+    "first_observed_at": "2026-08-30T09:22:10.780886Z",
+    "last_observed_at": "2026-09-18T09:22:10.780886Z",
+    "observation_count": 4,
+    "consecutive_observations": 4,
+    "streak_started_at": "2026-08-30T09:22:10.780886Z",
+    "persistence_state": "persistent",
+    "threshold_days": 7,
+    "days_until_persistent": null
+  },
+  "known_dependencies": [],
+  "ownership": {
+    "status": "UNKNOWN",
+    "stack_name": null,
+    "stack_id": null,
+    "logical_id": null,
+    "source": null,
+    "terraform": "UNKNOWN",
+    "notes": [
+      "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+    ]
+  },
+  "estimated_cost": {
+    "amount": "47.6000",
+    "confidence": "MEDIUM",
+    "explanation": "gp3 storage: 500 GiB Fallback table captured at 2026-09-20.",
+    "source": "fallback_table",
+    "upper_bound": false
+  },
+  "detection_confidence": "HIGH",
+  "remediation_risk": "LOW",
+  "preconditions": [
+    "Volume must still be in state available with 0 attachments at execution time",
+    "Tag cloudzombie:ignore must not equal true",
+    "No aws:cloudformation:stack-name tag may be present",
+    "Caller account must equal 123456789012"
+  ],
+  "warnings": [],
+  "limitations": [
+    "Condition start time is not available from AWS; CloudZombie reports its own observation history instead.",
+    "Dependency checks cover only known relationships (see Known dependencies).",
+    "Terraform ownership is unknown unless explicit metadata says otherwise.",
+    "Cost figures are public list-price estimates, not your bill."
+  ],
+  "recommended_action": "Review the evidence, then run the guarded script; it re-validates account, region and live state before acting.",
+  "script_available": true,
+  "script_kind": "guarded_remediation",
+  "script_unavailable_reason": null
+}

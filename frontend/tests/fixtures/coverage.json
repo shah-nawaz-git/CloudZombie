@@ -1,0 +1,125 @@
+{
+  "scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+  "started_at": "2026-09-18T09:22:10.780886Z",
+  "status": "partial",
+  "regions": {
+    "eu-central-1": {
+      "status": "complete",
+      "detectors": {
+        "unattached_ebs_volume": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "unassociated_elastic_ip": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "stopped_ec2_instance": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "snapshot_missing_source_volume": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        }
+      },
+      "warnings": []
+    },
+    "us-east-1": {
+      "status": "complete",
+      "detectors": {
+        "unattached_ebs_volume": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "unassociated_elastic_ip": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "stopped_ec2_instance": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "snapshot_missing_source_volume": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        }
+      },
+      "warnings": []
+    },
+    "ap-southeast-2": {
+      "status": "partial",
+      "detectors": {
+        "unattached_ebs_volume": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "unassociated_elastic_ip": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "stopped_ec2_instance": {
+          "status": "complete",
+          "error_code": null,
+          "message": null,
+          "missing_operation": null
+        },
+        "snapshot_missing_source_volume": {
+          "status": "missing_permission",
+          "error_code": "permission_denied",
+          "message": "permission denied for ec2:DescribeSnapshots in ap-southeast-2",
+          "missing_operation": "ec2:DescribeSnapshots"
+        }
+      },
+      "warnings": []
+    },
+    "me-south-1": {
+      "status": "skipped",
+      "detectors": {},
+      "warnings": [
+        "region not enabled (opt-in required)"
+      ]
+    }
+  },
+  "completed_regions": [
+    "eu-central-1",
+    "us-east-1"
+  ],
+  "partial_regions": [
+    "ap-southeast-2"
+  ],
+  "failed_regions": [],
+  "skipped_regions": [
+    "me-south-1"
+  ],
+  "errors": [
+    {
+      "scope": "detector",
+      "region": "ap-southeast-2",
+      "detector_type": "snapshot_missing_source_volume",
+      "code": "permission_denied",
+      "message": "permission denied for ec2:DescribeSnapshots in ap-southeast-2",
+      "missing_operation": "ec2:DescribeSnapshots"
+    }
+  ]
+}

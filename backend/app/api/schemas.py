@@ -99,6 +99,8 @@ class FindingOut(ApiModel):
     created_at: datetime
     updated_at: datetime
     resource_age_days: int | None
+    first_observed_days_ago: int
+    last_observed_days_ago: int
     observation_age_days: int
     days_until_persistent: int | None
     threshold_days: int

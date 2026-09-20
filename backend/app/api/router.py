@@ -68,6 +68,8 @@ def finding_out(finding: Finding, settings: AppSettings, now: datetime) -> Findi
             "resource_age_days": (
                 _days(finding.resource_created_at, now) if finding.resource_created_at else None
             ),
+            "first_observed_days_ago": _days(finding.first_observed_at, now),
+            "last_observed_days_ago": _days(finding.last_observed_at, now),
             "observation_age_days": observation_age,
             "days_until_persistent": (None if persistent else max(threshold - observation_age, 0)),
             "threshold_days": threshold,

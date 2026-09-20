@@ -1,0 +1,1081 @@
+{
+  "items": [
+    {
+      "id": "13b515ac-5931-451b-85a5-7cef6854150d",
+      "account_id": "123456789012",
+      "region": "eu-central-1",
+      "resource_type": "ebs_volume",
+      "resource_id": "vol-0a1b2c3d4e5f60001",
+      "detector_type": "unattached_ebs_volume",
+      "title": "Unattached EBS volume vol-0a1b2c3d4e5f60001",
+      "summary": "This 500 GiB gp3 volume is currently in state 'available' with no attachments.",
+      "resource_created_at": "2026-03-24T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "persistent",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "LOW",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 47.6,
+      "cost_explanation": "gp3 storage: 500 GiB Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "gp3 storage: 500 GiB",
+          "quantity": "500",
+          "unit": "GiB-month",
+          "unit_price": "0.0952",
+          "monthly_cost": "47.6000"
+        }
+      ],
+      "evidence": {
+        "volume_id": "vol-0a1b2c3d4e5f60001",
+        "availability_zone": "eu-central-1a",
+        "state": "available",
+        "volume_type": "gp3",
+        "size_gib": 500,
+        "iops": 3000,
+        "throughput_mibps": 125,
+        "encrypted": true,
+        "created_at": "2026-03-24T09:22:10.780886+00:00",
+        "origin_snapshot_id": null,
+        "attachment_count": 0,
+        "tags": {
+          "Name": "analytics-cache"
+        },
+        "name_tag": "analytics-cache"
+      },
+      "known_dependencies": [],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 180,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": null,
+      "threshold_days": 7,
+      "script_kind": "guarded_remediation",
+      "script_available": true,
+      "script_unavailable_reason": null
+    },
+    {
+      "id": "206e708b-1b9e-49bd-b5ee-397b5a33dc39",
+      "account_id": "123456789012",
+      "region": "us-east-1",
+      "resource_type": "ebs_volume",
+      "resource_id": "vol-0a1b2c3d4e5f60003",
+      "detector_type": "unattached_ebs_volume",
+      "title": "Unattached EBS volume vol-0a1b2c3d4e5f60003",
+      "summary": "This 200 GiB gp3 volume is currently in state 'available' with no attachments.",
+      "resource_created_at": "2026-08-06T09:22:10.780886Z",
+      "first_observed_at": "2026-09-18T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-09-18T09:22:10.780886Z",
+      "observation_count": 1,
+      "consecutive_observations": 1,
+      "persistence_state": "newly_observed",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "REVIEW",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 46.0,
+      "cost_explanation": "gp3 storage: 200 GiB gp3 provisioned IOPS above 3000 gp3 throughput above 125 MiB/s Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "gp3 storage: 200 GiB",
+          "quantity": "200",
+          "unit": "GiB-month",
+          "unit_price": "0.08",
+          "monthly_cost": "16.00"
+        },
+        {
+          "label": "gp3 provisioned IOPS above 3000",
+          "quantity": "3000",
+          "unit": "IOPS-month",
+          "unit_price": "0.005",
+          "monthly_cost": "15.000"
+        },
+        {
+          "label": "gp3 throughput above 125 MiB/s",
+          "quantity": "375",
+          "unit": "MiB/s-month",
+          "unit_price": "0.04",
+          "monthly_cost": "15.00"
+        }
+      ],
+      "evidence": {
+        "volume_id": "vol-0a1b2c3d4e5f60003",
+        "availability_zone": "us-east-1a",
+        "state": "available",
+        "volume_type": "gp3",
+        "size_gib": 200,
+        "iops": 6000,
+        "throughput_mibps": 500,
+        "encrypted": false,
+        "created_at": "2026-08-06T09:22:10.780886+00:00",
+        "origin_snapshot_id": null,
+        "attachment_count": 0,
+        "tags": {
+          "Name": "burst-workspace",
+          "hostile": "\"; echo hacked"
+        },
+        "name_tag": "burst-workspace"
+      },
+      "known_dependencies": [],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in us-east-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-09-18T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 45,
+      "first_observed_days_ago": 2,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 0,
+      "days_until_persistent": 7,
+      "threshold_days": 7,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "newly_observed"
+    },
+    {
+      "id": "d87b5c0e-a43f-4334-9941-525ed5ee1c2f",
+      "account_id": "123456789012",
+      "region": "eu-central-1",
+      "resource_type": "ec2_instance",
+      "resource_id": "i-0a1b2c3d4e5f60001",
+      "detector_type": "stopped_ec2_instance",
+      "title": "Stopped EC2 instance i-0a1b2c3d4e5f60001",
+      "summary": "This instance is currently stopped. Stopped compute is not billed, but its 2 attached EBS volume(s) (280 GiB) and 1 associated public IPv4 address(es) continue to incur charges.",
+      "resource_created_at": "2026-03-04T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "persistent",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "REVIEW",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 35.066,
+      "cost_explanation": "gp3 storage: 80 GiB gp2 storage: 200 GiB Public IPv4 addresses Stopped compute is not billed and is not counted. Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "gp3 storage: 80 GiB",
+          "quantity": "80",
+          "unit": "GiB-month",
+          "unit_price": "0.0952",
+          "monthly_cost": "7.6160"
+        },
+        {
+          "label": "gp2 storage: 200 GiB",
+          "quantity": "200",
+          "unit": "GiB-month",
+          "unit_price": "0.119",
+          "monthly_cost": "23.800"
+        },
+        {
+          "label": "Public IPv4 addresses",
+          "quantity": "730",
+          "unit": "hour",
+          "unit_price": "0.005",
+          "monthly_cost": "3.650"
+        }
+      ],
+      "evidence": {
+        "instance_id": "i-0a1b2c3d4e5f60001",
+        "instance_type": "t3.large",
+        "state": "stopped",
+        "launched_at": "2026-03-04T09:22:10.780886+00:00",
+        "launch_time_note": "LaunchTime is the last start time, not creation time.",
+        "platform": null,
+        "attached_volumes": [
+          {
+            "volume_id": "vol-0a1b2c3d4e5f61001",
+            "device_name": "/dev/xvda",
+            "volume_type": "gp3",
+            "size_gib": 80,
+            "iops": 3000,
+            "throughput_mibps": 125
+          },
+          {
+            "volume_id": "vol-0a1b2c3d4e5f61002",
+            "device_name": "/dev/sdf",
+            "volume_type": "gp2",
+            "size_gib": 200,
+            "iops": 600,
+            "throughput_mibps": null
+          }
+        ],
+        "attached_storage_gib": 280,
+        "associated_public_ipv4": [
+          "eipalloc-0a1b2c3d4e5f60003"
+        ],
+        "tags": {
+          "Name": "batch-worker"
+        },
+        "name_tag": "batch-worker"
+      },
+      "known_dependencies": [
+        {
+          "kind": "attached_ebs_volume",
+          "target_id": "vol-0a1b2c3d4e5f61001",
+          "description": "Attached EBS volume vol-0a1b2c3d4e5f61001 (80 GiB gp3) continues to be billed while the instance is stopped.",
+          "blocks_remediation": false
+        },
+        {
+          "kind": "attached_ebs_volume",
+          "target_id": "vol-0a1b2c3d4e5f61002",
+          "description": "Attached EBS volume vol-0a1b2c3d4e5f61002 (200 GiB gp2) continues to be billed while the instance is stopped.",
+          "blocks_remediation": false
+        },
+        {
+          "kind": "associated_elastic_ip",
+          "target_id": "eipalloc-0a1b2c3d4e5f60003",
+          "description": "Associated Elastic IP eipalloc-0a1b2c3d4e5f60003 continues to be billed while instance i-0a1b2c3d4e5f60001 is stopped.",
+          "blocks_remediation": false
+        }
+      ],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [
+        "vol-0a1b2c3d4e5f61001",
+        "vol-0a1b2c3d4e5f61002",
+        "eipalloc-0a1b2c3d4e5f60003"
+      ],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 200,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": null,
+      "threshold_days": 7,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "detector_has_no_destructive_script"
+    },
+    {
+      "id": "b1f1ecaf-64d0-4f35-a872-886438e738e1",
+      "account_id": "123456789012",
+      "region": "eu-central-1",
+      "resource_type": "ebs_volume",
+      "resource_id": "vol-0a1b2c3d4e5f60002",
+      "detector_type": "unattached_ebs_volume",
+      "title": "Unattached EBS volume vol-0a1b2c3d4e5f60002",
+      "summary": "This 100 GiB gp2 volume is currently in state 'available' with no attachments.",
+      "resource_created_at": "2026-05-23T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "persistent",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "HIGH",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 11.9,
+      "cost_explanation": "gp2 storage: 100 GiB Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "gp2 storage: 100 GiB",
+          "quantity": "100",
+          "unit": "GiB-month",
+          "unit_price": "0.119",
+          "monthly_cost": "11.900"
+        }
+      ],
+      "evidence": {
+        "volume_id": "vol-0a1b2c3d4e5f60002",
+        "availability_zone": "eu-central-1b",
+        "state": "available",
+        "volume_type": "gp2",
+        "size_gib": 100,
+        "iops": 300,
+        "throughput_mibps": null,
+        "encrypted": true,
+        "created_at": "2026-05-23T09:22:10.780886+00:00",
+        "origin_snapshot_id": null,
+        "attachment_count": 0,
+        "tags": {
+          "aws:cloudformation:stack-name": "customer-api-prod",
+          "aws:cloudformation:logical-id": "DataVolume"
+        },
+        "name_tag": null
+      },
+      "known_dependencies": [],
+      "ownership": {
+        "status": "CONFIRMED",
+        "stack_name": "customer-api-prod",
+        "stack_id": "arn:aws:cloudformation:eu-central-1:123456789012:stack/customer-api-prod/demo",
+        "logical_id": "DataVolume",
+        "source": "stack_resource_index",
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Found as logical resource DataVolume in stack customer-api-prod.",
+          "Change the CloudFormation stack instead of deleting the resource manually."
+        ]
+      },
+      "related_resource_ids": [],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 120,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": null,
+      "threshold_days": 7,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "cloudformation_owned"
+    },
+    {
+      "id": "7492a425-3579-4171-8f2d-02f82931c76e",
+      "account_id": "123456789012",
+      "region": "eu-central-1",
+      "resource_type": "ebs_snapshot",
+      "resource_id": "snap-0a1b2c3d4e5f60001",
+      "detector_type": "snapshot_missing_source_volume",
+      "title": "Snapshot with deleted source volume snap-0a1b2c3d4e5f60001",
+      "summary": "This snapshot references source volume vol-0deadbeef00000001, which no longer exists in eu-central-1. That does not make the snapshot unnecessary: it may back an AMI, be shared, or be part of a backup plan. It deserves review.",
+      "resource_created_at": "2025-11-24T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "newly_observed",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "REVIEW",
+      "cost_confidence": "LOW",
+      "estimated_monthly_cost": 10.8,
+      "cost_explanation": "standard snapshot upper bound: 200 GiB Snapshots are incremental; exact reclaimable storage is unknown. Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "standard snapshot upper bound: 200 GiB",
+          "quantity": "200",
+          "unit": "GiB-month",
+          "unit_price": "0.054",
+          "monthly_cost": "10.800"
+        }
+      ],
+      "evidence": {
+        "snapshot_id": "snap-0a1b2c3d4e5f60001",
+        "source_volume_id": "vol-0deadbeef00000001",
+        "state": "completed",
+        "started_at": "2025-11-24T09:22:10.780886+00:00",
+        "volume_size_gib": 200,
+        "storage_tier": "standard",
+        "encrypted": true,
+        "description": "Legacy database backup\nDo not delete without review",
+        "tags": {},
+        "name_tag": null,
+        "ami_references": [],
+        "shared_with_account_ids": [],
+        "shared_publicly": false,
+        "lock_state": null,
+        "aws_backup_managed": false,
+        "source_volume_exists": false
+      },
+      "known_dependencies": [],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [
+        "vol-0deadbeef00000001"
+      ],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 300,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": 11,
+      "threshold_days": 30,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "detector_has_no_destructive_script"
+    },
+    {
+      "id": "e59a116e-a2c0-4245-bb14-ab357291b844",
+      "account_id": "123456789012",
+      "region": "eu-central-1",
+      "resource_type": "ebs_snapshot",
+      "resource_id": "snap-0a1b2c3d4e5f60003",
+      "detector_type": "snapshot_missing_source_volume",
+      "title": "Snapshot with deleted source volume snap-0a1b2c3d4e5f60003",
+      "summary": "This snapshot references source volume vol-0deadbeef00000003, which no longer exists in eu-central-1. That does not make the snapshot unnecessary: it may back an AMI, be shared, or be part of a backup plan. It deserves review.",
+      "resource_created_at": "2025-08-16T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "newly_observed",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "HIGH",
+      "cost_confidence": "LOW",
+      "estimated_monthly_cost": 6.75,
+      "cost_explanation": "archive snapshot upper bound: 500 GiB Snapshots are incremental; exact reclaimable storage is unknown. Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "archive snapshot upper bound: 500 GiB",
+          "quantity": "500",
+          "unit": "GiB-month",
+          "unit_price": "0.0135",
+          "monthly_cost": "6.7500"
+        }
+      ],
+      "evidence": {
+        "snapshot_id": "snap-0a1b2c3d4e5f60003",
+        "source_volume_id": "vol-0deadbeef00000003",
+        "state": "completed",
+        "started_at": "2025-08-16T09:22:10.780886+00:00",
+        "volume_size_gib": 500,
+        "storage_tier": "archive",
+        "encrypted": false,
+        "description": "Shared archive",
+        "tags": {},
+        "name_tag": null,
+        "ami_references": [],
+        "shared_with_account_ids": [
+          "210987654321"
+        ],
+        "shared_publicly": false,
+        "lock_state": null,
+        "aws_backup_managed": false,
+        "source_volume_exists": false
+      },
+      "known_dependencies": [
+        {
+          "kind": "shared_snapshot",
+          "target_id": null,
+          "description": "Snapshot is shared with one or more AWS accounts.",
+          "blocks_remediation": true
+        }
+      ],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [
+        "vol-0deadbeef00000003"
+      ],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 400,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": 11,
+      "threshold_days": 30,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "detector_has_no_destructive_script"
+    },
+    {
+      "id": "cdea2888-ed47-4463-bca9-6e90f906678e",
+      "account_id": "123456789012",
+      "region": "eu-central-1",
+      "resource_type": "ebs_volume",
+      "resource_id": "vol-0a1b2c3d4e5f60004",
+      "detector_type": "unattached_ebs_volume",
+      "title": "Unattached EBS volume vol-0a1b2c3d4e5f60004",
+      "summary": "This 50 GiB gp3 volume is currently in state 'available' with no attachments.",
+      "resource_created_at": "2026-06-22T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "persistent",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "LOW",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 4.76,
+      "cost_explanation": "gp3 storage: 50 GiB Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "gp3 storage: 50 GiB",
+          "quantity": "50",
+          "unit": "GiB-month",
+          "unit_price": "0.0952",
+          "monthly_cost": "4.7600"
+        }
+      ],
+      "evidence": {
+        "volume_id": "vol-0a1b2c3d4e5f60004",
+        "availability_zone": "eu-central-1c",
+        "state": "available",
+        "volume_type": "gp3",
+        "size_gib": 50,
+        "iops": 3000,
+        "throughput_mibps": 125,
+        "encrypted": true,
+        "created_at": "2026-06-22T09:22:10.780886+00:00",
+        "origin_snapshot_id": null,
+        "attachment_count": 0,
+        "tags": {
+          "cloudzombie:ignore": "true",
+          "cloudzombie:reason": "DR staging"
+        },
+        "name_tag": null
+      },
+      "known_dependencies": [],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [],
+      "status": "ignored",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": "DR staging",
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 90,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": null,
+      "threshold_days": 7,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "finding_not_open"
+    },
+    {
+      "id": "ca0f45fe-9107-434e-bd83-1bfee4272208",
+      "account_id": "123456789012",
+      "region": "us-east-1",
+      "resource_type": "ebs_snapshot",
+      "resource_id": "snap-0a1b2c3d4e5f60002",
+      "detector_type": "snapshot_missing_source_volume",
+      "title": "Snapshot with deleted source volume snap-0a1b2c3d4e5f60002",
+      "summary": "This snapshot references source volume vol-0deadbeef00000002, which no longer exists in us-east-1. That does not make the snapshot unnecessary: it may back an AMI, be shared, or be part of a backup plan. It deserves review.",
+      "resource_created_at": "2026-01-23T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "newly_observed",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "HIGH",
+      "cost_confidence": "LOW",
+      "estimated_monthly_cost": 4.0,
+      "cost_explanation": "standard snapshot upper bound: 80 GiB Snapshots are incremental; exact reclaimable storage is unknown. Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "standard snapshot upper bound: 80 GiB",
+          "quantity": "80",
+          "unit": "GiB-month",
+          "unit_price": "0.05",
+          "monthly_cost": "4.00"
+        }
+      ],
+      "evidence": {
+        "snapshot_id": "snap-0a1b2c3d4e5f60002",
+        "source_volume_id": "vol-0deadbeef00000002",
+        "state": "completed",
+        "started_at": "2026-01-23T09:22:10.780886+00:00",
+        "volume_size_gib": 80,
+        "storage_tier": "standard",
+        "encrypted": true,
+        "description": "AMI root",
+        "tags": {},
+        "name_tag": null,
+        "ami_references": [
+          "ami-0a1b2c3d4e5f60001"
+        ],
+        "shared_with_account_ids": [],
+        "shared_publicly": false,
+        "lock_state": null,
+        "aws_backup_managed": false,
+        "source_volume_exists": false
+      },
+      "known_dependencies": [
+        {
+          "kind": "registered_ami",
+          "target_id": "ami-0a1b2c3d4e5f60001",
+          "description": "Snapshot is referenced by registered AMI ami-0a1b2c3d4e5f60001.",
+          "blocks_remediation": true
+        }
+      ],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in us-east-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [
+        "vol-0deadbeef00000002",
+        "ami-0a1b2c3d4e5f60001"
+      ],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 240,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": 11,
+      "threshold_days": 30,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "detector_has_no_destructive_script"
+    },
+    {
+      "id": "eb4ff52c-af51-43f3-b37d-817f457f2970",
+      "account_id": "123456789012",
+      "region": "eu-central-1",
+      "resource_type": "elastic_ip",
+      "resource_id": "eipalloc-0a1b2c3d4e5f60001",
+      "detector_type": "unassociated_elastic_ip",
+      "title": "Unassociated Elastic IP eipalloc-0a1b2c3d4e5f60001",
+      "summary": "This Elastic IP address (allocation eipalloc-0a1b2c3d4e5f60001) is currently not associated with any instance or network interface. AWS charges for public IPv4 addresses whether or not they are in use.",
+      "resource_created_at": null,
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "persistent",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "LOW",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 3.65,
+      "cost_explanation": "Public IPv4 address: 730 hours Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "Public IPv4 address: 730 hours",
+          "quantity": "730",
+          "unit": "hour",
+          "unit_price": "0.005",
+          "monthly_cost": "3.650"
+        }
+      ],
+      "evidence": {
+        "allocation_id": "eipalloc-0a1b2c3d4e5f60001",
+        "public_ip": "203.0.113.10",
+        "domain": "vpc",
+        "association_id": null,
+        "instance_id": null,
+        "network_interface_id": null,
+        "tags": {},
+        "name_tag": null
+      },
+      "known_dependencies": [],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": null,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": null,
+      "threshold_days": 1,
+      "script_kind": "guarded_remediation",
+      "script_available": true,
+      "script_unavailable_reason": null
+    },
+    {
+      "id": "5999eac2-44d1-4748-9c41-ad01d58823e5",
+      "account_id": "123456789012",
+      "region": "us-east-1",
+      "resource_type": "elastic_ip",
+      "resource_id": "eipalloc-0a1b2c3d4e5f60002",
+      "detector_type": "unassociated_elastic_ip",
+      "title": "Unassociated Elastic IP eipalloc-0a1b2c3d4e5f60002",
+      "summary": "This Elastic IP address (allocation eipalloc-0a1b2c3d4e5f60002) is currently not associated with any instance or network interface. AWS charges for public IPv4 addresses whether or not they are in use.",
+      "resource_created_at": null,
+      "first_observed_at": "2026-09-13T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-09-13T09:22:10.780886Z",
+      "observation_count": 2,
+      "consecutive_observations": 2,
+      "persistence_state": "persistent",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "LOW",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 3.65,
+      "cost_explanation": "Public IPv4 address: 730 hours Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "Public IPv4 address: 730 hours",
+          "quantity": "730",
+          "unit": "hour",
+          "unit_price": "0.005",
+          "monthly_cost": "3.650"
+        }
+      ],
+      "evidence": {
+        "allocation_id": "eipalloc-0a1b2c3d4e5f60002",
+        "public_ip": "203.0.113.11",
+        "domain": "vpc",
+        "association_id": null,
+        "instance_id": null,
+        "network_interface_id": null,
+        "tags": {},
+        "name_tag": null
+      },
+      "known_dependencies": [],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in us-east-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "abd5bc53-541f-4c0a-bb82-31abe03a9d9d",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-09-13T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": null,
+      "first_observed_days_ago": 7,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 5,
+      "days_until_persistent": null,
+      "threshold_days": 1,
+      "script_kind": "guarded_remediation",
+      "script_available": true,
+      "script_unavailable_reason": null
+    },
+    {
+      "id": "50aa877f-33dd-48aa-ba01-6b27771282e3",
+      "account_id": "123456789012",
+      "region": "us-east-1",
+      "resource_type": "ec2_instance",
+      "resource_id": "i-0a1b2c3d4e5f60002",
+      "detector_type": "stopped_ec2_instance",
+      "title": "Stopped EC2 instance i-0a1b2c3d4e5f60002",
+      "summary": "This instance is currently stopped. Stopped compute is not billed, but its 1 attached EBS volume(s) (30 GiB) and 0 associated public IPv4 address(es) continue to incur charges.",
+      "resource_created_at": "2026-07-22T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-18T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 4,
+      "consecutive_observations": 4,
+      "persistence_state": "persistent",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "REVIEW",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 2.4,
+      "cost_explanation": "gp3 storage: 30 GiB Stopped compute is not billed and is not counted. Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "gp3 storage: 30 GiB",
+          "quantity": "30",
+          "unit": "GiB-month",
+          "unit_price": "0.08",
+          "monthly_cost": "2.40"
+        }
+      ],
+      "evidence": {
+        "instance_id": "i-0a1b2c3d4e5f60002",
+        "instance_type": "t3.small",
+        "state": "stopped",
+        "launched_at": "2026-07-22T09:22:10.780886+00:00",
+        "launch_time_note": "LaunchTime is the last start time, not creation time.",
+        "platform": null,
+        "attached_volumes": [
+          {
+            "volume_id": "vol-0a1b2c3d4e5f61003",
+            "device_name": "/dev/xvda",
+            "volume_type": "gp3",
+            "size_gib": 30,
+            "iops": 3000,
+            "throughput_mibps": 125
+          }
+        ],
+        "attached_storage_gib": 30,
+        "associated_public_ipv4": [],
+        "tags": {
+          "Name": "$(rm -rf /)",
+          "aws:cloudformation:stack-name": "legacy-batch",
+          "aws:cloudformation:logical-id": "Worker"
+        },
+        "name_tag": "$(rm -rf /)"
+      },
+      "known_dependencies": [
+        {
+          "kind": "attached_ebs_volume",
+          "target_id": "vol-0a1b2c3d4e5f61003",
+          "description": "Attached EBS volume vol-0a1b2c3d4e5f61003 (30 GiB gp3) continues to be billed while the instance is stopped.",
+          "blocks_remediation": false
+        }
+      ],
+      "ownership": {
+        "status": "LIKELY",
+        "stack_name": "legacy-batch",
+        "stack_id": null,
+        "logical_id": "Worker",
+        "source": "tags",
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Resource carries aws:cloudformation:* tags but is not in the current stack-resource index; the stack may have been deleted with a retained resource."
+        ]
+      },
+      "related_resource_ids": [
+        "vol-0a1b2c3d4e5f61003"
+      ],
+      "status": "open",
+      "resolved_at": null,
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-18T09:22:10.780886Z",
+      "resource_age_days": 60,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 2,
+      "observation_age_days": 19,
+      "days_until_persistent": null,
+      "threshold_days": 7,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "detector_has_no_destructive_script"
+    },
+    {
+      "id": "671d9c8a-7dae-4954-9168-3721a5888f0e",
+      "account_id": "123456789012",
+      "region": "us-east-1",
+      "resource_type": "ebs_volume",
+      "resource_id": "vol-0a1b2c3d4e5f60009",
+      "detector_type": "unattached_ebs_volume",
+      "title": "Unattached EBS volume vol-0a1b2c3d4e5f60009",
+      "summary": "This 20 GiB gp2 volume is currently in state 'available' with no attachments.",
+      "resource_created_at": "2026-07-12T09:22:10.780886Z",
+      "first_observed_at": "2026-08-30T09:22:10.780886Z",
+      "last_observed_at": "2026-09-06T09:22:10.780886Z",
+      "streak_started_at": "2026-08-30T09:22:10.780886Z",
+      "observation_count": 2,
+      "consecutive_observations": 0,
+      "persistence_state": "persistent",
+      "detection_confidence": "HIGH",
+      "remediation_risk": "LOW",
+      "cost_confidence": "MEDIUM",
+      "estimated_monthly_cost": 2.0,
+      "cost_explanation": "gp2 storage: 20 GiB Fallback table captured at 2026-09-20.",
+      "pricing_source": "fallback_table",
+      "pricing_timestamp": "2026-09-20T00:00:00Z",
+      "cost_line_items": [
+        {
+          "label": "gp2 storage: 20 GiB",
+          "quantity": "20",
+          "unit": "GiB-month",
+          "unit_price": "0.1",
+          "monthly_cost": "2.0"
+        }
+      ],
+      "evidence": {
+        "volume_id": "vol-0a1b2c3d4e5f60009",
+        "availability_zone": "us-east-1b",
+        "state": "available",
+        "volume_type": "gp2",
+        "size_gib": 20,
+        "iops": 100,
+        "throughput_mibps": null,
+        "encrypted": false,
+        "created_at": "2026-07-12T09:22:10.780886+00:00",
+        "origin_snapshot_id": null,
+        "attachment_count": 0,
+        "tags": {},
+        "name_tag": null
+      },
+      "known_dependencies": [],
+      "ownership": {
+        "status": "UNKNOWN",
+        "stack_name": null,
+        "stack_id": null,
+        "logical_id": null,
+        "source": null,
+        "terraform": "UNKNOWN",
+        "notes": [
+          "Not found in any CloudFormation stack in us-east-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+        ]
+      },
+      "related_resource_ids": [],
+      "status": "resolved",
+      "resolved_at": "2026-09-13T09:22:10.780886Z",
+      "dismissed_at": null,
+      "dismiss_reason": null,
+      "ignore_reason": null,
+      "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "last_scan_id": "1b9e8541-aba7-4796-9c6b-47c90e1f3362",
+      "created_at": "2026-08-30T09:22:10.780886Z",
+      "updated_at": "2026-09-13T09:22:10.780886Z",
+      "resource_age_days": 70,
+      "first_observed_days_ago": 21,
+      "last_observed_days_ago": 14,
+      "observation_age_days": 7,
+      "days_until_persistent": null,
+      "threshold_days": 7,
+      "script_kind": "investigation",
+      "script_available": false,
+      "script_unavailable_reason": "finding_not_open"
+    }
+  ],
+  "total": 12,
+  "page": 1,
+  "page_size": 50
+}

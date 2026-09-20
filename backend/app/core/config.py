@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.core.enums import Mode
@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     cloudzombie_demo_seed: bool = Field(default=True, validation_alias="CLOUDZOMBIE_DEMO_SEED")
     demo_fixture_path: str | None = Field(default=None, validation_alias="CLOUDZOMBIE_DEMO_FIXTURE")
     cloudzombie_log_level: str = Field(default="INFO", validation_alias="CLOUDZOMBIE_LOG_LEVEL")
+
+    @field_validator("aws_profile", "aws_region_selection", mode="before")
+    @classmethod
+    def empty_aws_setting_is_none(cls, value: object) -> object:
+        return None if value == "" else value
 
     @property
     def region_selection(self) -> list[str] | None:

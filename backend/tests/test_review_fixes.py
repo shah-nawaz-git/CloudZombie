@@ -5,6 +5,13 @@ from app.models import AppSettings
 from app.services.provider_factory import build_provider
 
 
+def test_empty_aws_settings_are_none() -> None:
+    settings = Settings(AWS_PROFILE="", AWS_REGION_SELECTION="")
+    assert settings.aws_profile is None
+    assert settings.aws_region_selection is None
+    assert settings.region_selection is None
+
+
 def test_database_module_has_no_eager_engine() -> None:
     database = importlib.import_module("app.persistence.database")
     assert not hasattr(database, "engine")

@@ -3,6 +3,14 @@ from threading import Event
 from tests.api.conftest import find_by_resource
 
 
+def test_repeated_status_filter(api_client) -> None:
+    response = api_client.get(
+        "/api/findings", params=[("status", "open"), ("status", "dismissed")]
+    )
+    assert response.status_code == 200
+    assert {item["status"] for item in response.json()["items"]} <= {"open", "dismissed"}
+
+
 def test_health_identity_and_openapi(api_client) -> None:
     health = api_client.get("/api/health")
     assert health.status_code == 200
@@ -77,6 +85,8 @@ def test_findings_filters_sort_and_pagination(api_client) -> None:
 def test_detail_patch_plan_and_scripts(api_client) -> None:
     hero = find_by_resource(api_client, "vol-0a1b2c3d4e5f60001")
     detail = api_client.get(f"/api/findings/{hero['id']}")
+    assert detail.json()["first_observed_days_ago"] == 21
+    assert detail.json()["last_observed_days_ago"] == 2
     assert len(detail.json()["observations"]) == 4
     assert "related_findings" in detail.json()
     plan = api_client.get(f"/api/findings/{hero['id']}/plan")

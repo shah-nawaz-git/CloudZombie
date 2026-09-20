@@ -56,8 +56,9 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm run lint
+      - run: npm run format:check
       - run: npx tsc --noEmit
-      - run: npm run test --if-present
+      - run: npm run test
       - run: npm run build
 
   shellcheck:
@@ -87,7 +88,24 @@ jobs:
           curl -fsS -X POST http://localhost:8000/api/scans
           -H 'Content-Type: application/json'
           -d '{"wait": true}'
-      # Placeholder: Playwright E2E steps will be added in the frontend phase.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npx playwright test
+        working-directory: frontend
+        env:
+          E2E_BASE_URL: http://localhost:3000
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: frontend/playwright-report
       - name: Show logs on failure
         if: failure()
         run: docker compose logs

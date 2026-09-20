@@ -14,6 +14,7 @@ fi
 "$PYTHON" -m pytest -q
 cd "$ROOT/frontend"
 npm run lint
+npm run format:check
 npx tsc --noEmit
-npm run test --if-present
+npm run test
 npm run build

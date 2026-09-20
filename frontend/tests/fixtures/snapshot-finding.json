@@ -1,0 +1,119 @@
+{
+  "id": "7492a425-3579-4171-8f2d-02f82931c76e",
+  "account_id": "123456789012",
+  "region": "eu-central-1",
+  "resource_type": "ebs_snapshot",
+  "resource_id": "snap-0a1b2c3d4e5f60001",
+  "detector_type": "snapshot_missing_source_volume",
+  "title": "Snapshot with deleted source volume snap-0a1b2c3d4e5f60001",
+  "summary": "This snapshot references source volume vol-0deadbeef00000001, which no longer exists in eu-central-1. That does not make the snapshot unnecessary: it may back an AMI, be shared, or be part of a backup plan. It deserves review.",
+  "resource_created_at": "2025-11-24T09:22:10.780886Z",
+  "first_observed_at": "2026-08-30T09:22:10.780886Z",
+  "last_observed_at": "2026-09-18T09:22:10.780886Z",
+  "streak_started_at": "2026-08-30T09:22:10.780886Z",
+  "observation_count": 4,
+  "consecutive_observations": 4,
+  "persistence_state": "newly_observed",
+  "detection_confidence": "HIGH",
+  "remediation_risk": "REVIEW",
+  "cost_confidence": "LOW",
+  "estimated_monthly_cost": 10.8,
+  "cost_explanation": "standard snapshot upper bound: 200 GiB Snapshots are incremental; exact reclaimable storage is unknown. Fallback table captured at 2026-09-20.",
+  "pricing_source": "fallback_table",
+  "pricing_timestamp": "2026-09-20T00:00:00Z",
+  "cost_line_items": [
+    {
+      "label": "standard snapshot upper bound: 200 GiB",
+      "quantity": "200",
+      "unit": "GiB-month",
+      "unit_price": "0.054",
+      "monthly_cost": "10.800"
+    }
+  ],
+  "evidence": {
+    "snapshot_id": "snap-0a1b2c3d4e5f60001",
+    "source_volume_id": "vol-0deadbeef00000001",
+    "state": "completed",
+    "started_at": "2025-11-24T09:22:10.780886+00:00",
+    "volume_size_gib": 200,
+    "storage_tier": "standard",
+    "encrypted": true,
+    "description": "Legacy database backup\nDo not delete without review",
+    "tags": {},
+    "name_tag": null,
+    "ami_references": [],
+    "shared_with_account_ids": [],
+    "shared_publicly": false,
+    "lock_state": null,
+    "aws_backup_managed": false,
+    "source_volume_exists": false
+  },
+  "known_dependencies": [],
+  "ownership": {
+    "status": "UNKNOWN",
+    "stack_name": null,
+    "stack_id": null,
+    "logical_id": null,
+    "source": null,
+    "terraform": "UNKNOWN",
+    "notes": [
+      "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean unmanaged \u2014 Terraform, console or other tooling may own it."
+    ]
+  },
+  "related_resource_ids": [
+    "vol-0deadbeef00000001"
+  ],
+  "status": "open",
+  "resolved_at": null,
+  "dismissed_at": null,
+  "dismiss_reason": null,
+  "ignore_reason": null,
+  "first_scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+  "last_scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+  "created_at": "2026-08-30T09:22:10.780886Z",
+  "updated_at": "2026-09-18T09:22:10.780886Z",
+  "resource_age_days": 300,
+  "first_observed_days_ago": 21,
+  "last_observed_days_ago": 2,
+  "observation_age_days": 19,
+  "days_until_persistent": 11,
+  "threshold_days": 30,
+  "script_kind": "investigation",
+  "script_available": false,
+  "script_unavailable_reason": "detector_has_no_destructive_script",
+  "observations": [
+    {
+      "scan_id": "f6bd7c89-12fb-40ab-8588-51c77d9b3cc7",
+      "observed_at": "2026-08-30T09:22:10.780886Z",
+      "status": "open",
+      "persistence_state": "newly_observed",
+      "remediation_risk": "REVIEW",
+      "estimated_monthly_cost": 10.8
+    },
+    {
+      "scan_id": "1b9e8541-aba7-4796-9c6b-47c90e1f3362",
+      "observed_at": "2026-09-06T09:22:10.780886Z",
+      "status": "open",
+      "persistence_state": "newly_observed",
+      "remediation_risk": "REVIEW",
+      "estimated_monthly_cost": 10.8
+    },
+    {
+      "scan_id": "abd5bc53-541f-4c0a-bb82-31abe03a9d9d",
+      "observed_at": "2026-09-13T09:22:10.780886Z",
+      "status": "open",
+      "persistence_state": "newly_observed",
+      "remediation_risk": "REVIEW",
+      "estimated_monthly_cost": 10.8
+    },
+    {
+      "scan_id": "aacb33ce-3d44-4bde-a55b-dead05c44305",
+      "observed_at": "2026-09-18T09:22:10.780886Z",
+      "status": "open",
+      "persistence_state": "newly_observed",
+      "remediation_risk": "REVIEW",
+      "estimated_monthly_cost": 10.8
+    }
+  ],
+  "related_findings": []
+}
