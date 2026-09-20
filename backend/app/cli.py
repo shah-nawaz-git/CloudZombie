@@ -9,6 +9,7 @@ from app.core.config import Settings
 from app.models import AppSettings
 from app.persistence.database import create_database_engine
 from app.persistence.models import Base, Finding
+from app.pricing.cache import DbPricingCache
 from app.pricing.service import PricingService
 from app.scanner.engine import ScanEngine
 from app.services.provider_factory import build_provider
@@ -60,7 +61,7 @@ def _print_findings(session: Session, now: datetime) -> None:
         amount = (
             f"${finding.estimated_monthly_cost:.2f}"
             if finding.estimated_monthly_cost is not None
-            else "—"
+            else "-"
         )
         rows.append(
             [
@@ -98,13 +99,14 @@ def cloudzombie() -> None:
 def scan(regions: tuple[str, ...]) -> None:
     environment, factory, app_settings, clock = _runtime()
     provider = build_provider(environment, app_settings, clock)
-    pricing = PricingService(provider, app_settings, clock)
+    cache = DbPricingCache(factory, clock, app_settings.pricing_cache_ttl_seconds)
+    pricing = PricingService(provider, app_settings, clock, cache)
     result = ScanEngine(provider, factory, app_settings, pricing, clock).run_scan(
         list(regions) or None
     )
     click.echo(f"{result.mode.upper()} account {result.account_id or 'unavailable'}")
     for region, entry in result.coverage.items():
-        suffix = " — region not enabled" if entry["status"] == "skipped" else ""
+        suffix = " - region not enabled" if entry["status"] == "skipped" else ""
         click.echo(f"{region}  {entry['status'].upper()}{suffix}")
     with factory() as session:
         _print_findings(session, clock.now())

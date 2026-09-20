@@ -22,7 +22,7 @@ ALLOWED_OPERATIONS: frozenset[str] = frozenset(
 
 def _operation_name(model: Any) -> str:
     service_model = model.service_model
-    service = service_model.endpoint_prefix.lower()
+    service = service_model.signing_name.lower()
     return f"{service}:{model.name}"
 
 

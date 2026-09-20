@@ -88,6 +88,7 @@ class ReadOnlyEc2:
             "ec2:DescribeRegions",
             self.__region,
             self.__sleep,
+            AllRegions=True,
         )
 
     def describe_volumes(self) -> dict[str, Any]:

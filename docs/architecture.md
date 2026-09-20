@@ -319,7 +319,7 @@ PricingRequest = EbsVolumePricingRequest(region, volume_type, size_gib, iops, th
                | SnapshotPricingRequest(region, size_gib, storage_tier)
                | StoppedInstancePricingRequest(region, volumes: [EbsVolumePricingRequest], public_ipv4_count)
 PricingResult(estimated_monthly_cost: Decimal|None, cost_confidence, explanation: str,
-              source: "aws_pricing_api"|"fallback_table"|"unavailable", pricing_timestamp, line_items: [ {label, quantity, unit, unit_price, monthly_cost} ], upper_bound: bool)
+              source: "aws_pricing_api"|"fallback_table"|"unavailable", pricing_timestamp, line_items: [ {label, quantity, unit, unit_price, monthly_cost} ], upper_bound: bool, warnings: [str])
 ```
 
 Backends, tried in order under `pricing_mode = auto`: `AwsPricingApiBackend` (through
@@ -344,8 +344,8 @@ Calculation rules:
 run_scan(requested_regions):
   identity = provider.get_identity()                     # failure → scan status failed, error recorded, nothing else runs
   scan = create scan row (running)
-  regions = requested or settings.regions or [r.name for r in provider.list_regions() if r.opt_in_status != "not-opted-in"]
-            (regions explicitly requested but reported not-opted-in are recorded as skipped)
+  regions = requested or settings.regions or [r.name for r in provider.list_regions()]
+            (regions reported not-opted-in are recorded as skipped so coverage remains visible)
   for region in regions (ThreadPoolExecutor, max_workers = settings.max_region_concurrency):
       ownership = OwnershipResolver(provider, region)      # lazily builds the stack-resource index once; permission failure → all UNKNOWN + region warning
       for detector in DETECTORS:
@@ -370,7 +370,7 @@ class Detector(ABC):
 ```
 `FindingCandidate` carries: identity fields, `title`, `summary`, `resource_created_at`,
 `evidence`, `known_dependencies`, `related_resource_ids`, `tags`, `ignored`, `ignore_reason`,
-`pricing_request`, `detection_confidence`. Ownership and pricing are filled in by the engine.
+`pricing_request`, `detection_confidence`, `warnings`. Ownership and pricing are filled in by the engine.
 
 ## 10. Remediation and the script-generation boundary
 
@@ -493,6 +493,7 @@ AWS_REGION_SELECTION                  optional comma list; seeds settings.region
 PRICING_CACHE_TTL                     seconds, default 86400
 CLOUDZOMBIE_CORS_ORIGINS              comma list, default http://localhost:3000
 CLOUDZOMBIE_DEMO_SEED                 true|false, default true
+CLOUDZOMBIE_DEMO_FIXTURE              optional demo dataset path; container sets /app/fixtures/demo/dataset.json
 CLOUDZOMBIE_LOG_LEVEL                 default INFO
 ```
 Credentials are never read by application code; boto3 resolves them. Nothing secret is

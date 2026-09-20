@@ -20,6 +20,13 @@ def ec2_wrapper(sleep=lambda _: None):
     return client, ReadOnlyEc2(client, sleep=sleep)
 
 
+def test_describe_regions_requests_all_regions() -> None:
+    client, wrapper = ec2_wrapper()
+    with Stubber(client) as stubber:
+        stubber.add_response("describe_regions", {"Regions": []}, {"AllRegions": True})
+        assert wrapper.describe_regions() == {"Regions": []}
+
+
 def test_two_page_volumes_and_snapshots() -> None:
     client, wrapper = ec2_wrapper()
     with Stubber(client) as stubber:

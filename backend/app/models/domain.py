@@ -106,6 +106,7 @@ class PricingResult(BaseModel):
     pricing_timestamp: datetime | None
     line_items: list[dict[str, Any]] = Field(default_factory=list)
     upper_bound: bool = False
+    warnings: list[str] = Field(default_factory=list)
 
 
 class FindingCandidate(BaseModel):
@@ -125,6 +126,7 @@ class FindingCandidate(BaseModel):
     ignore_reason: str | None = None
     pricing_request: PricingRequest | None = None
     detection_confidence: DetectionConfidence = DetectionConfidence.HIGH
+    warnings: list[str] = Field(default_factory=list)
     ownership: Ownership = Field(default_factory=Ownership)
     pricing_result: PricingResult | None = None
 

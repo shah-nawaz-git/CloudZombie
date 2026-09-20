@@ -18,6 +18,7 @@ class Settings(BaseSettings):
         default="http://localhost:3000", validation_alias="CLOUDZOMBIE_CORS_ORIGINS"
     )
     cloudzombie_demo_seed: bool = Field(default=True, validation_alias="CLOUDZOMBIE_DEMO_SEED")
+    demo_fixture_path: str | None = Field(default=None, validation_alias="CLOUDZOMBIE_DEMO_FIXTURE")
     cloudzombie_log_level: str = Field(default="INFO", validation_alias="CLOUDZOMBIE_LOG_LEVEL")
 
     @property

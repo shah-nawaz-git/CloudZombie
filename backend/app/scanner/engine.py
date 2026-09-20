@@ -28,6 +28,7 @@ from app.providers.errors import (
     ProviderPermissionError,
     ProviderRegionUnavailableError,
 )
+from app.providers.memoizing import ScanScopedProvider
 from app.scanner.history import reconcile
 
 SessionFactory = Callable[[], Session]
@@ -49,6 +50,10 @@ class RegionDetection:
     warnings: list[str]
 
 
+def _deduplicate(items: list[str]) -> list[str]:
+    return list(dict.fromkeys(items))
+
+
 class ScanEngine:
     def __init__(
         self,
@@ -65,22 +70,29 @@ class ScanEngine:
         self._clock = clock
 
     def _detect_region(
-        self, identity: Identity, region: str, observed_at: datetime
+        self,
+        provider: CloudProvider,
+        identity: Identity,
+        region: str,
+        observed_at: datetime,
     ) -> RegionDetection:
         cells: list[DetectionCell] = []
         warnings: list[str] = []
-        resolver = OwnershipResolver(self._provider, region)
+        resolver = OwnershipResolver(provider, region)
         for detector in DETECTORS:
             try:
                 context = ScanContext(identity.account_id, region, observed_at, self._settings)
                 enriched: list[FindingCandidate] = []
-                for candidate in detector.scan(self._provider, region, context):
+                for candidate in detector.scan(provider, region, context):
                     ownership = resolver.resolve(candidate)
                     pricing_result = (
                         self._pricing.estimate(candidate.pricing_request)
                         if candidate.pricing_request is not None
                         else None
                     )
+                    warnings.extend(candidate.warnings)
+                    if pricing_result is not None:
+                        warnings.extend(pricing_result.warnings)
                     enriched.append(
                         candidate.model_copy(
                             update={"ownership": ownership, "pricing_result": pricing_result}
@@ -108,7 +120,9 @@ class ScanEngine:
                 cells.append(
                     DetectionCell(detector.detector_type, DetectorCoverageStatus.SKIPPED, [], error)
                 )
-                return RegionDetection(region, RegionCoverageStatus.SKIPPED, cells, warnings)
+                return RegionDetection(
+                    region, RegionCoverageStatus.SKIPPED, cells, _deduplicate(warnings)
+                )
             except ProviderError as exc:
                 error = {"code": "provider_error", "message": str(exc)}
                 cells.append(
@@ -124,13 +138,14 @@ class ScanEngine:
             status = RegionCoverageStatus.PARTIAL
         else:
             status = RegionCoverageStatus.FAILED
-        return RegionDetection(region, status, cells, warnings)
+        return RegionDetection(region, status, cells, _deduplicate(warnings))
 
     def run_scan(self, requested_regions: list[str] | None = None) -> Scan:
         observed_at = self._clock.now()
+        provider = ScanScopedProvider(self._provider)
         with self._session_factory() as session:
             scan = Scan(
-                mode=self._provider.mode.value,
+                mode=provider.mode.value,
                 account_id=None,
                 principal_arn=None,
                 seeded=False,
@@ -148,7 +163,7 @@ class ScanEngine:
             session.add(scan)
             session.flush()
             try:
-                identity = self._provider.get_identity()
+                identity = provider.get_identity()
             except ProviderCredentialsError as exc:
                 scan.status = ScanStatus.FAILED.value
                 scan.finished_at = self._clock.now()
@@ -159,7 +174,7 @@ class ScanEngine:
             scan.account_id = identity.account_id
             scan.principal_arn = identity.principal_arn
             try:
-                region_info = {item.name: item for item in self._provider.list_regions()}
+                region_info = {item.name: item for item in provider.list_regions()}
             except ProviderError as exc:
                 scan.status = ScanStatus.FAILED.value
                 scan.finished_at = self._clock.now()
@@ -174,36 +189,37 @@ class ScanEngine:
             elif self._settings.regions is not None:
                 regions = self._settings.regions
             else:
-                regions = [
-                    name
-                    for name, info in region_info.items()
-                    if info.opt_in_status != "not-opted-in"
-                ]
-            scan.requested_regions = regions
+                regions = list(region_info)
+            scan.requested_regions = list(regions)
 
-            detections: list[RegionDetection] = []
+            detection_by_region: dict[str, RegionDetection] = {}
             runnable: list[str] = []
             for region in regions:
                 info = region_info.get(region)
                 if info is not None and info.opt_in_status == "not-opted-in":
-                    detections.append(
-                        RegionDetection(
-                            region, RegionCoverageStatus.SKIPPED, [], ["region not enabled"]
-                        )
+                    detection_by_region[region] = RegionDetection(
+                        region,
+                        RegionCoverageStatus.SKIPPED,
+                        [],
+                        ["region not enabled (opt-in required)"],
                     )
                 else:
                     runnable.append(region)
             with ThreadPoolExecutor(max_workers=self._settings.max_region_concurrency) as executor:
-                detections.extend(
-                    executor.map(
-                        lambda selected: self._detect_region(identity, selected, observed_at),
-                        runnable,
-                    )
+                results = executor.map(
+                    lambda selected: self._detect_region(provider, identity, selected, observed_at),
+                    runnable,
                 )
+                detection_by_region.update({result.region: result for result in results})
+            detections = [detection_by_region[region] for region in regions]
 
             coverage: dict[str, dict] = {}
             errors: list[dict[str, str]] = []
             observed_findings: list[Finding] = []
+            completed: list[str] = []
+            partial: list[str] = []
+            failed: list[str] = []
+            skipped: list[str] = []
             for result in detections:
                 region_coverage = RegionCoverage(
                     status=result.status,
@@ -222,13 +238,13 @@ class ScanEngine:
                 )
                 coverage[result.region] = region_coverage.model_dump(mode="json")
                 if result.status == RegionCoverageStatus.COMPLETE:
-                    scan.completed_regions.append(result.region)
+                    completed.append(result.region)
                 elif result.status == RegionCoverageStatus.PARTIAL:
-                    scan.partial_regions.append(result.region)
+                    partial.append(result.region)
                 elif result.status == RegionCoverageStatus.FAILED:
-                    scan.failed_regions.append(result.region)
+                    failed.append(result.region)
                 else:
-                    scan.skipped_regions.append(result.region)
+                    skipped.append(result.region)
                 for cell in result.cells:
                     if cell.error:
                         errors.append(
@@ -269,13 +285,17 @@ class ScanEngine:
                         headline += finding.estimated_monthly_cost
                     elif finding.cost_confidence == CostConfidence.LOW.value:
                         low_confidence += finding.estimated_monthly_cost
+            scan.completed_regions = completed
+            scan.partial_regions = partial
+            scan.failed_regions = failed
+            scan.skipped_regions = skipped
             scan.estimated_exposure = headline
             scan.potential_exposure_low_confidence = low_confidence
             scan.coverage = coverage
             scan.errors = errors
             if not runnable:
                 scan.status = ScanStatus.FAILED.value
-            elif scan.partial_regions or scan.failed_regions:
+            elif partial or failed:
                 scan.status = ScanStatus.PARTIAL.value
             else:
                 scan.status = ScanStatus.COMPLETED.value

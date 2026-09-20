@@ -15,7 +15,8 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: backend/Dockerfile
     environment:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/cloudzombie
       CLOUDZOMBIE_MODE: ${CLOUDZOMBIE_MODE:-demo}

@@ -5,6 +5,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from app.core.config import Settings
 from app.core.enums import Mode
 from app.providers.base import (
     Address,
@@ -21,7 +22,11 @@ from app.providers.base import (
     StackResource,
     Volume,
 )
-from app.providers.errors import ProviderPermissionError, ProviderTransientError
+from app.providers.errors import (
+    ProviderPermissionError,
+    ProviderThrottledError,
+    ProviderTransientError,
+)
 
 
 @dataclass(frozen=True)
@@ -30,9 +35,10 @@ class DemoDataset:
 
 
 def load_demo_dataset(path: str | Path | None = None) -> DemoDataset:
-    if path is None:
-        path = Path(__file__).resolve().parents[3] / "fixtures" / "demo" / "dataset.json"
-    with Path(path).open(encoding="utf-8") as handle:
+    selected_path = path or Settings().demo_fixture_path
+    if selected_path is None:
+        selected_path = Path(__file__).resolve().parents[3] / "fixtures" / "demo" / "dataset.json"
+    with Path(selected_path).open(encoding="utf-8") as handle:
         return DemoDataset(json.load(handle))
 
 
@@ -58,17 +64,26 @@ class DemoProvider(CloudProvider):
         return self._anchor - timedelta(days=int(item["created_days_ago"]))
 
     def _fault(self, method: str, region: str) -> None:
+        operations = {
+            "list_volumes": "ec2:DescribeVolumes",
+            "list_addresses": "ec2:DescribeAddresses",
+            "list_instances": "ec2:DescribeInstances",
+            "list_snapshots": "ec2:DescribeSnapshots",
+            "list_images": "ec2:DescribeImages",
+            "get_snapshot_attributes": "ec2:DescribeSnapshotAttribute",
+            "get_snapshot_locks": "ec2:DescribeLockedSnapshots",
+            "list_stack_resources": "cloudformation:ListStackResources",
+        }
         for fault in self._data.get("faults", []):
-            if (
-                fault["method"] == method
-                and fault["region"] == region
-                and fault["kind"] == "access_denied"
-            ):
-                operations = {
-                    "list_snapshots": "ec2:DescribeSnapshots",
-                    "list_volumes": "ec2:DescribeVolumes",
-                }
-                raise ProviderPermissionError(operations.get(method, method), region)
+            if fault["method"] != method or fault["region"] != region:
+                continue
+            operation = operations[method]
+            if fault["kind"] == "access_denied":
+                raise ProviderPermissionError(operation, region)
+            if fault["kind"] == "throttled":
+                raise ProviderThrottledError(f"throttled while calling {operation}")
+            if fault["kind"] == "transient":
+                raise ProviderTransientError(f"transient failure calling {operation}")
 
     def get_identity(self) -> Identity:
         return Identity(

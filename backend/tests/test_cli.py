@@ -15,6 +15,7 @@ def test_scan_twice_preserves_first_observed_and_increments_count(tmp_path) -> N
     second = runner.invoke(cloudzombie, ["scan", "--region", "eu-central-1"], env=environment)
     assert second.exit_code == 0, second.output
     assert "DEMO" in first.output and "DEMO" in second.output
+    assert first.output.isascii() and second.output.isascii()
     assert "unattached for" not in first.output.lower() + second.output.lower()
     first_date = (
         next(line for line in first.output.splitlines() if "vol-0a1b2c3d4e5f60001" in line)

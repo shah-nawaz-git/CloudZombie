@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from typing import Any, Literal, Never, cast
 
@@ -181,6 +182,19 @@ def map_snapshot_lock(data: dict[str, Any]) -> SnapshotLock:
         snapshot_id=str(_required(data, "SnapshotId")),
         lock_state=lock_state,
     )
+
+
+def parse_price_list(items: list[str]) -> list[dict[str, Any]]:
+    documents: list[dict[str, Any]] = []
+    for item in items:
+        try:
+            document = json.loads(item)
+        except (json.JSONDecodeError, TypeError) as exc:
+            raise ProviderMalformedResponseError("invalid AWS price-list JSON") from exc
+        if not isinstance(document, dict):
+            raise ProviderMalformedResponseError("AWS price-list document is not an object")
+        documents.append(document)
+    return documents
 
 
 def map_stack_resource(region: str, stack: dict[str, Any], data: dict[str, Any]) -> StackResource:

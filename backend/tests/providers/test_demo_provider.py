@@ -3,8 +3,12 @@ from pathlib import Path
 
 import pytest
 
-from app.providers.demo import DemoProvider
-from app.providers.errors import ProviderPermissionError
+from app.providers.demo import DemoDataset, DemoProvider, load_demo_dataset
+from app.providers.errors import (
+    ProviderPermissionError,
+    ProviderThrottledError,
+    ProviderTransientError,
+)
 
 ANCHOR = datetime(2026, 9, 20, tzinfo=UTC)
 
@@ -45,6 +49,44 @@ def test_snapshot_fault(demo_dataset) -> None:
     with pytest.raises(ProviderPermissionError) as caught:
         provider(demo_dataset).list_snapshots("ap-southeast-2")
     assert caught.value.operation == "ec2:DescribeSnapshots"
+
+
+@pytest.mark.parametrize(
+    ("method", "args", "operation"),
+    [
+        ("list_volumes", (), "ec2:DescribeVolumes"),
+        ("list_addresses", (), "ec2:DescribeAddresses"),
+        ("list_instances", (), "ec2:DescribeInstances"),
+        ("list_snapshots", (), "ec2:DescribeSnapshots"),
+        ("list_images", (), "ec2:DescribeImages"),
+        ("get_snapshot_attributes", ("snap-1",), "ec2:DescribeSnapshotAttribute"),
+        ("get_snapshot_locks", (["snap-1"],), "ec2:DescribeLockedSnapshots"),
+        ("list_stack_resources", (), "cloudformation:ListStackResources"),
+    ],
+)
+def test_all_demo_fault_operations_are_mapped(demo_dataset, method, args, operation) -> None:
+    data = dict(demo_dataset.data)
+    data["faults"] = [{"region": "us-east-1", "method": method, "kind": "access_denied"}]
+    with pytest.raises(ProviderPermissionError) as caught:
+        getattr(provider(DemoDataset(data)), method)("us-east-1", *args)
+    assert caught.value.operation == operation
+
+
+@pytest.mark.parametrize(
+    ("kind", "error"),
+    [("throttled", ProviderThrottledError), ("transient", ProviderTransientError)],
+)
+def test_demo_fault_kinds(demo_dataset, kind, error) -> None:
+    data = dict(demo_dataset.data)
+    data["faults"] = [{"region": "us-east-1", "method": "list_volumes", "kind": kind}]
+    with pytest.raises(error):
+        provider(DemoDataset(data)).list_volumes("us-east-1")
+
+
+def test_explicit_fixture_path_precedes_environment(monkeypatch) -> None:
+    fixture = Path(__file__).parents[3] / "fixtures" / "demo" / "dataset.json"
+    monkeypatch.setenv("CLOUDZOMBIE_DEMO_FIXTURE", "missing.json")
+    assert load_demo_dataset(fixture).data["account_id"] == "123456789012"
 
 
 def test_demo_module_does_not_import_boto() -> None:

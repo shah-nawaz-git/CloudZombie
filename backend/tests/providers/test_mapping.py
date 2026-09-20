@@ -9,6 +9,7 @@ from app.providers.aws.mapping import (
     map_instance,
     map_snapshot,
     map_volume,
+    parse_price_list,
 )
 from app.providers.errors import ProviderMalformedResponseError
 
@@ -50,6 +51,12 @@ def test_resource_mappings_accept_missing_optional_fields() -> None:
     assert snapshot.storage_tier == "standard"
     image = map_image({"ImageId": "ami-1", "State": "available"})
     assert image.snapshot_ids == ()
+
+
+def test_price_list_json_is_parsed() -> None:
+    assert parse_price_list(['{"product": {"sku": "one"}}']) == [{"product": {"sku": "one"}}]
+    with pytest.raises(ProviderMalformedResponseError):
+        parse_price_list(["not json"])
 
 
 def test_missing_required_field_is_malformed() -> None:
