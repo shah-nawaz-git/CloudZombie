@@ -178,7 +178,7 @@ Volume(volume_id, state, volume_type, size_gib, iops, throughput_mibps, encrypte
 Address(allocation_id, public_ip, association_id, instance_id, network_interface_id, domain, tags)
 BlockDevice(device_name, volume_id, status)
 Instance(instance_id, state, instance_type, launched_at, block_devices, tags, platform)
-Snapshot(snapshot_id, volume_id, owner_id, state, started_at, volume_size_gib, storage_tier, encrypted, description, tags)
+Snapshot(snapshot_id, volume_id: str|None, owner_id, state, started_at, volume_size_gib, storage_tier, encrypted, description, tags)
 Image(image_id, name, state, snapshot_ids: tuple[str,...], tags)
 SnapshotAttributes(snapshot_id, shared_user_ids: tuple[str,...], shared_groups: tuple[str,...])
 SnapshotLock(snapshot_id, lock_state: "compliance"|"governance"|"compliance-cooloff"|"expired"|None)
@@ -468,7 +468,7 @@ Fixture contents (`fixtures/demo/dataset.json`, account `123456789012`):
 | `eipalloc-0a1b2c3d4e5f60003` associated to stopped `i-…0001` | 1–5 | Counted in EC2 residual cost, not an EIP finding |
 | `eipalloc-0a1b2c3d4e5f60004` associated to running `i-…0003` | 1–5 | Not a finding |
 | `i-0a1b2c3d4e5f60001` stopped t3.large, 2 attached volumes + EIP | 1–5 | Stopped EC2 residual review |
-| `i-0a1b2c3d4e5f60002` stopped, root volume only, hostile Name tag `$(rm -rf /)` | 1–5 | Stopped EC2; proves metadata never reaches scripts |
+| `i-0a1b2c3d4e5f60002` stopped, root volume only, hostile Name tag `$(rm -rf /)`, retained-resource CloudFormation tags for `legacy-batch` | 1–5 | Stopped EC2; `LIKELY` ownership from tags and proves metadata never reaches scripts |
 | `i-0a1b2c3d4e5f60003` running | 1–5 | Not a finding |
 | `snap-0a1b2c3d4e5f60001` 200 GiB standard, source deleted | 1–5 | Snapshot review, REVIEW |
 | `snap-0a1b2c3d4e5f60002` source deleted, referenced by `ami-0a1b2c3d4e5f60001` | 1–5 | Known dependency blocks → HIGH |

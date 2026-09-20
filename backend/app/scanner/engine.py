@@ -128,6 +128,8 @@ class ScanEngine:
                 cells.append(
                     DetectionCell(detector.detector_type, DetectorCoverageStatus.FAILED, [], error)
                 )
+        if resolver.warning is not None:
+            warnings.append(resolver.warning)
         statuses = {cell.status for cell in cells}
         if statuses == {DetectorCoverageStatus.COMPLETE}:
             status = RegionCoverageStatus.COMPLETE

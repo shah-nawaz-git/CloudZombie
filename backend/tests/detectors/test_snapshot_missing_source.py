@@ -78,9 +78,10 @@ def test_missing_source_emits_candidate(fixed_clock) -> None:
     assert candidate.title.startswith("Snapshot with deleted source volume")
 
 
-def test_placeholder_other_owner_and_pending_do_not_emit(fixed_clock) -> None:
+def test_placeholder_missing_volume_other_owner_and_pending_do_not_emit(fixed_clock) -> None:
     for selected in (
         snapshot(volume_id="vol-ffffffff"),
+        snapshot(volume_id=None),
         snapshot(owner_id="210987654321"),
         snapshot(state="pending"),
     ):

@@ -11,6 +11,7 @@ from app.persistence.database import create_database_engine
 from app.persistence.models import Base, Finding
 from app.pricing.cache import DbPricingCache
 from app.pricing.service import PricingService
+from app.providers.errors import ProviderCredentialsError, ProviderError
 from app.scanner.engine import ScanEngine
 from app.services.provider_factory import build_provider
 from app.services.settings_service import SettingsService
@@ -92,6 +93,29 @@ def _print_findings(session: Session, now: datetime) -> None:
 @click.group()
 def cloudzombie() -> None:
     """CloudZombie cleanup planning commands."""
+
+
+@cloudzombie.command()
+def identity() -> None:
+    try:
+        environment, _, app_settings, clock = _runtime()
+        provider = build_provider(environment, app_settings, clock)
+        verified = provider.get_identity()
+    except ProviderCredentialsError as exc:
+        click.echo(f"Identity check failed: AWS credentials could not be verified ({exc}).")
+        click.echo(
+            "What you can do: configure a valid AWS profile or the standard AWS credential "
+            "environment variables, then retry."
+        )
+        raise click.exceptions.Exit(1) from None
+    except ProviderError as exc:
+        click.echo(f"Identity check failed: AWS provider error ({exc}).")
+        click.echo("What you can do: verify AWS connectivity, region access, and permissions.")
+        raise click.exceptions.Exit(1) from None
+    click.echo(f"Mode: {provider.mode.value.upper()}")
+    click.echo(f"Account ID: {verified.account_id}")
+    click.echo(f"Principal ARN: {verified.principal_arn}")
+    click.echo(f"Identity type: {verified.identity_type}")
 
 
 @cloudzombie.command()

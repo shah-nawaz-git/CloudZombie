@@ -38,6 +38,16 @@ def test_resource_mappings_accept_missing_optional_fields() -> None:
         }
     )
     assert instance.block_devices == ()
+    no_source = map_snapshot(
+        {
+            "SnapshotId": "snap-none",
+            "OwnerId": "1",
+            "State": "completed",
+            "StartTime": NOW,
+            "VolumeSize": 1,
+        }
+    )
+    assert no_source.volume_id is None
     snapshot = map_snapshot(
         {
             "SnapshotId": "snap-1",

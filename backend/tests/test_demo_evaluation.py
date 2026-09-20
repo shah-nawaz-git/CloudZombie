@@ -84,8 +84,24 @@ def test_demo_timeline_evaluates_real_history(session_factory, fixed_clock, demo
 
         hero = by_id["vol-0a1b2c3d4e5f60001"]
         assert hero.persistence_state == PersistenceState.PERSISTENT
+        assert hero.remediation_risk == RemediationRisk.LOW
+        assert hero.ownership["status"] == "UNKNOWN"
+        assert hero.ownership["notes"] == [
+            "Not found in any CloudFormation stack in eu-central-1. UNKNOWN does not mean "
+            "unmanaged — Terraform, console or other tooling may own it."
+        ]
         assert hero.first_observed_at == anchor - timedelta(days=21)
         assert hero.observation_count == hero.consecutive_observations == 4
+
+        stack_volume = by_id["vol-0a1b2c3d4e5f60002"]
+        assert stack_volume.ownership["status"] == "CONFIRMED"
+        assert stack_volume.ownership["stack_name"] == "customer-api-prod"
+        assert stack_volume.remediation_risk == RemediationRisk.HIGH
+
+        retained_instance = by_id["i-0a1b2c3d4e5f60002"]
+        assert retained_instance.ownership["status"] == "LIKELY"
+        assert retained_instance.ownership["stack_name"] == "legacy-batch"
+        assert retained_instance.remediation_risk == RemediationRisk.REVIEW
 
         new_volume = by_id["vol-0a1b2c3d4e5f60003"]
         assert new_volume.persistence_state == PersistenceState.NEWLY_OBSERVED

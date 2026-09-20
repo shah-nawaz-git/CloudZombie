@@ -26,7 +26,7 @@
   ],
   "instances": [
     {"instance_id": "i-0a1b2c3d4e5f60001", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 200, "state": "stopped", "instance_type": "t3.large", "block_devices": [{"device_name": "/dev/xvda", "volume_id": "vol-0a1b2c3d4e5f61001", "status": "attached"}, {"device_name": "/dev/sdf", "volume_id": "vol-0a1b2c3d4e5f61002", "status": "attached"}], "tags": {"Name": "batch-worker"}, "platform": null},
-    {"instance_id": "i-0a1b2c3d4e5f60002", "region": "us-east-1", "steps": [1,2,3,4,5], "created_days_ago": 60, "state": "stopped", "instance_type": "t3.small", "block_devices": [{"device_name": "/dev/xvda", "volume_id": "vol-0a1b2c3d4e5f61003", "status": "attached"}], "tags": {"Name": "$(rm -rf /)"}, "platform": null},
+    {"instance_id": "i-0a1b2c3d4e5f60002", "region": "us-east-1", "steps": [1,2,3,4,5], "created_days_ago": 60, "state": "stopped", "instance_type": "t3.small", "block_devices": [{"device_name": "/dev/xvda", "volume_id": "vol-0a1b2c3d4e5f61003", "status": "attached"}], "tags": {"Name": "$(rm -rf /)", "aws:cloudformation:stack-name": "legacy-batch", "aws:cloudformation:logical-id": "Worker"}, "platform": null},
     {"instance_id": "i-0a1b2c3d4e5f60003", "region": "us-east-1", "steps": [1,2,3,4,5], "created_days_ago": 30, "state": "running", "instance_type": "t3.micro", "block_devices": [], "tags": {"Name": "web"}, "platform": null}
   ],
   "snapshots": [

@@ -1,6 +1,47 @@
 from click.testing import CliRunner
 
+import app.cli as cli_module
 from app.cli import cloudzombie
+from app.providers.errors import ProviderCredentialsError
+
+
+def test_demo_identity_command(tmp_path) -> None:
+    result = CliRunner().invoke(
+        cloudzombie,
+        ["identity"],
+        env={
+            "CLOUDZOMBIE_MODE": "demo",
+            "DATABASE_URL": f"sqlite:///{(tmp_path / 'identity.db').as_posix()}",
+        },
+    )
+    assert result.exit_code == 0, result.output
+    assert "Mode: DEMO" in result.output
+    assert "Account ID: 123456789012" in result.output
+    assert "Identity type: assumed-role" in result.output
+
+
+def test_identity_credentials_error_is_clean(tmp_path, monkeypatch) -> None:
+    class MissingCredentialsProvider:
+        def get_identity(self):
+            raise ProviderCredentialsError("credentials unavailable")
+
+    monkeypatch.setattr(
+        cli_module,
+        "build_provider",
+        lambda environment, app_settings, clock: MissingCredentialsProvider(),
+    )
+    result = CliRunner().invoke(
+        cloudzombie,
+        ["identity"],
+        env={
+            "CLOUDZOMBIE_MODE": "live",
+            "DATABASE_URL": f"sqlite:///{(tmp_path / 'live-identity.db').as_posix()}",
+        },
+    )
+    assert result.exit_code == 1
+    assert "Identity check failed" in result.output
+    assert "What you can do" in result.output
+    assert "Traceback" not in result.output
 
 
 def test_scan_twice_preserves_first_observed_and_increments_count(tmp_path) -> None:

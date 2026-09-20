@@ -103,7 +103,7 @@ def map_instance(data: dict[str, Any]) -> Instance:
 def map_snapshot(data: dict[str, Any]) -> Snapshot:
     return Snapshot(
         snapshot_id=str(_required(data, "SnapshotId")),
-        volume_id=str(_required(data, "VolumeId")),
+        volume_id=str(data["VolumeId"]) if data.get("VolumeId") else None,
         owner_id=str(_required(data, "OwnerId")),
         state=str(_required(data, "State")),
         started_at=_datetime(data, "StartTime"),

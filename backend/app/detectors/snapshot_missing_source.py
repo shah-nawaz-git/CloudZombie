@@ -39,6 +39,7 @@ class SnapshotMissingSourceVolumeDetector(Detector):
             for snapshot in snapshots
             if snapshot.owner_id == context.account_id
             and snapshot.state == "completed"
+            and snapshot.volume_id is not None
             and snapshot.volume_id != _PLACEHOLDER_VOLUME_ID
             and _VOLUME_ID.fullmatch(snapshot.volume_id)
             and snapshot.volume_id not in current_volume_ids

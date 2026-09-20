@@ -4,6 +4,7 @@ from botocore.exceptions import (
 from botocore.exceptions import (
     EndpointConnectionError,
     NoCredentialsError,
+    NoRegionError,
     PartialCredentialsError,
     ProfileNotFound,
 )
@@ -42,7 +43,9 @@ def client_error_code(exc: Exception) -> tuple[str, str]:
 def translate_client_error(exc: Exception, operation: str, region: str | None) -> None:
     code, message = client_error_code(exc)
     lower_message = message.lower()
-    if isinstance(exc, (NoCredentialsError, PartialCredentialsError, ProfileNotFound)):
+    if isinstance(
+        exc, (NoCredentialsError, NoRegionError, PartialCredentialsError, ProfileNotFound)
+    ):
         raise ProviderCredentialsError(str(exc)) from exc
     if isinstance(exc, EndpointConnectionError):
         raise ProviderRegionUnavailableError(region) from exc

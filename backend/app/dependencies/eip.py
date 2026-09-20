@@ -7,7 +7,7 @@ def association_dependencies(address: Address) -> list[KnownDependency]:
     if address.instance_id:
         dependencies.append(
             KnownDependency(
-                kind="ec2_association",
+                kind="eip_association",
                 target_id=address.instance_id,
                 description=f"Elastic IP is associated with instance {address.instance_id}.",
                 blocks_remediation=True,
@@ -16,7 +16,7 @@ def association_dependencies(address: Address) -> list[KnownDependency]:
     if address.network_interface_id:
         dependencies.append(
             KnownDependency(
-                kind="network_interface_association",
+                kind="eip_association",
                 target_id=address.network_interface_id,
                 description=(
                     "Elastic IP is associated with network interface "

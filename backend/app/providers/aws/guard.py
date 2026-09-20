@@ -48,10 +48,12 @@ def install_operation_guard(session: Any) -> None:
         raise TypeError("unsupported AWS session type")
 
 
-def guarded_client(session: Any, service: str, region: str | None = None) -> Any:
+def guarded_client(
+    session: Any, service: str, region: str | None = None, config: Any | None = None
+) -> Any:
     if hasattr(session, "create_client"):
-        client = session.create_client(service, region_name=region)
+        client = session.create_client(service, region_name=region, config=config)
     else:
-        client = session.client(service, region_name=region)
+        client = session.client(service, region_name=region, config=config)
     _register_guard(client.meta.events)
     return client

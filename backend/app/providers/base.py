@@ -76,7 +76,7 @@ class Instance:
 @dataclass(frozen=True)
 class Snapshot:
     snapshot_id: str
-    volume_id: str
+    volume_id: str | None
     owner_id: str
     state: str
     started_at: datetime

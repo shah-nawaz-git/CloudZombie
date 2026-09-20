@@ -32,6 +32,19 @@ def session_factory() -> Iterator[sessionmaker[Session]]:
 
 
 @pytest.fixture
+def aws_credentials(monkeypatch, tmp_path) -> None:
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "testing")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "testing")
+    monkeypatch.setenv("AWS_SECURITY_TOKEN", "testing")
+    monkeypatch.setenv("AWS_SESSION_TOKEN", "testing")
+    monkeypatch.setenv("AWS_DEFAULT_REGION", "us-east-1")
+    monkeypatch.setenv("AWS_CONFIG_FILE", str(tmp_path / "nonexistent-config"))
+    monkeypatch.setenv("AWS_SHARED_CREDENTIALS_FILE", str(tmp_path / "nonexistent-credentials"))
+    monkeypatch.setenv("AWS_EC2_METADATA_DISABLED", "true")
+    monkeypatch.delenv("AWS_PROFILE", raising=False)
+
+
+@pytest.fixture
 def fixed_clock() -> FixedClock:
     return FixedClock(datetime(2026, 9, 20, 12, tzinfo=UTC))
 

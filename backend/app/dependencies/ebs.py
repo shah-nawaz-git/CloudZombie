@@ -5,7 +5,7 @@ from app.providers.base import Volume
 def attachment_dependencies(volume: Volume) -> list[KnownDependency]:
     return [
         KnownDependency(
-            kind="ec2_attachment",
+            kind="ebs_attachment",
             target_id=attachment.instance_id,
             description=(
                 f"Volume is attached to instance {attachment.instance_id} as {attachment.device}."
