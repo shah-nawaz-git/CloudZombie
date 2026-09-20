@@ -4,9 +4,7 @@ from tests.api.conftest import find_by_resource
 
 
 def test_repeated_status_filter(api_client) -> None:
-    response = api_client.get(
-        "/api/findings", params=[("status", "open"), ("status", "dismissed")]
-    )
+    response = api_client.get("/api/findings", params=[("status", "open"), ("status", "dismissed")])
     assert response.status_code == 200
     assert {item["status"] for item in response.json()["items"]} <= {"open", "dismissed"}
 
