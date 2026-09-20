@@ -1,0 +1,30 @@
+{
+  "captured_at": "2026-09-20",
+  "source_note": "Public AWS list prices captured for deterministic fallback estimates; excludes discounts, taxes, and negotiated rates.",
+  "regions": {
+    "us-east-1": {
+      "gp3": {"storage": 0.08, "iops": 0.005, "throughput": 0.04},
+      "gp2": {"storage": 0.10},
+      "io1": {"storage": 0.125, "iops": 0.065},
+      "io2": {"storage": 0.125, "iops_tiers": [0.065, 0.046, 0.032]},
+      "st1": {"storage": 0.045},
+      "sc1": {"storage": 0.015},
+      "standard": {"storage": 0.05},
+      "snapshot_standard": 0.05,
+      "snapshot_archive": 0.0125,
+      "public_ipv4_hourly": 0.005
+    },
+    "eu-central-1": {
+      "gp3": {"storage": 0.0952, "iops": 0.006, "throughput": 0.0476},
+      "gp2": {"storage": 0.119},
+      "io1": {"storage": 0.149, "iops": 0.078},
+      "io2": {"storage": 0.149, "iops_tiers": [0.078, 0.055, 0.038]},
+      "st1": {"storage": 0.054},
+      "sc1": {"storage": 0.018},
+      "standard": {"storage": 0.059},
+      "snapshot_standard": 0.054,
+      "snapshot_archive": 0.0135,
+      "public_ipv4_hourly": 0.005
+    }
+  }
+}

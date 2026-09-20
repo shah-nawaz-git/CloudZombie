@@ -1,0 +1,2 @@
+[console_scripts]
+cloudzombie = app.cli:cloudzombie

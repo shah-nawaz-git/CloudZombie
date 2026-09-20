@@ -1,0 +1,52 @@
+{
+  "account_id": "123456789012",
+  "principal_arn": "arn:aws:sts::123456789012:assumed-role/CloudZombieDemo/session",
+  "user_id": "AROADEMO:session",
+  "regions": [
+    {"name": "eu-central-1", "opt_in_status": "opt-in-not-required"},
+    {"name": "us-east-1", "opt_in_status": "opt-in-not-required"},
+    {"name": "ap-southeast-2", "opt_in_status": "opt-in-not-required"},
+    {"name": "me-south-1", "opt_in_status": "not-opted-in"}
+  ],
+  "volumes": [
+    {"volume_id": "vol-0a1b2c3d4e5f60001", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 180, "state": "available", "volume_type": "gp3", "size_gib": 500, "iops": 3000, "throughput_mibps": 125, "encrypted": true, "snapshot_id": null, "attachments": [], "tags": {"Name": "analytics-cache"}, "availability_zone": "eu-central-1a"},
+    {"volume_id": "vol-0a1b2c3d4e5f60002", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 120, "state": "available", "volume_type": "gp2", "size_gib": 100, "iops": 300, "throughput_mibps": null, "encrypted": true, "snapshot_id": null, "attachments": [], "tags": {"aws:cloudformation:stack-name": "customer-api-prod", "aws:cloudformation:logical-id": "DataVolume"}, "availability_zone": "eu-central-1b"},
+    {"volume_id": "vol-0a1b2c3d4e5f60003", "region": "us-east-1", "steps": [4,5], "created_days_ago": 45, "state": "available", "volume_type": "gp3", "size_gib": 200, "iops": 6000, "throughput_mibps": 500, "encrypted": false, "snapshot_id": null, "attachments": [], "tags": {"Name": "burst-workspace", "hostile": "\"; echo hacked"}, "availability_zone": "us-east-1a"},
+    {"volume_id": "vol-0a1b2c3d4e5f60004", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 90, "state": "available", "volume_type": "gp3", "size_gib": 50, "iops": 3000, "throughput_mibps": 125, "encrypted": true, "snapshot_id": null, "attachments": [], "tags": {"cloudzombie:ignore": "true", "cloudzombie:reason": "DR staging"}, "availability_zone": "eu-central-1c"},
+    {"volume_id": "vol-0a1b2c3d4e5f60009", "region": "us-east-1", "steps": [1,2], "created_days_ago": 70, "state": "available", "volume_type": "gp2", "size_gib": 20, "iops": 100, "throughput_mibps": null, "encrypted": false, "snapshot_id": null, "attachments": [], "tags": {}, "availability_zone": "us-east-1b"},
+    {"volume_id": "vol-0a1b2c3d4e5f61001", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 200, "state": "in-use", "volume_type": "gp3", "size_gib": 80, "iops": 3000, "throughput_mibps": 125, "encrypted": true, "snapshot_id": null, "attachments": [{"instance_id": "i-0a1b2c3d4e5f60001", "device": "/dev/xvda", "state": "attached"}], "tags": {}, "availability_zone": "eu-central-1a"},
+    {"volume_id": "vol-0a1b2c3d4e5f61002", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 150, "state": "in-use", "volume_type": "gp2", "size_gib": 200, "iops": 600, "throughput_mibps": null, "encrypted": true, "snapshot_id": null, "attachments": [{"instance_id": "i-0a1b2c3d4e5f60001", "device": "/dev/sdf", "state": "attached"}], "tags": {}, "availability_zone": "eu-central-1a"},
+    {"volume_id": "vol-0a1b2c3d4e5f61003", "region": "us-east-1", "steps": [1,2,3,4,5], "created_days_ago": 60, "state": "in-use", "volume_type": "gp3", "size_gib": 30, "iops": 3000, "throughput_mibps": 125, "encrypted": true, "snapshot_id": null, "attachments": [{"instance_id": "i-0a1b2c3d4e5f60002", "device": "/dev/xvda", "state": "attached"}], "tags": {}, "availability_zone": "us-east-1a"}
+  ],
+  "addresses": [
+    {"allocation_id": "eipalloc-0a1b2c3d4e5f60001", "region": "eu-central-1", "steps": [1,2,3,4,5], "public_ip": "203.0.113.10", "association_id": null, "instance_id": null, "network_interface_id": null, "domain": "vpc", "tags": {}},
+    {"allocation_id": "eipalloc-0a1b2c3d4e5f60002", "region": "us-east-1", "steps": [3,4,5], "public_ip": "203.0.113.11", "association_id": null, "instance_id": null, "network_interface_id": null, "domain": "vpc", "tags": {}},
+    {"allocation_id": "eipalloc-0a1b2c3d4e5f60003", "region": "eu-central-1", "steps": [1,2,3,4,5], "public_ip": "203.0.113.12", "association_id": "eipassoc-stopped", "instance_id": "i-0a1b2c3d4e5f60001", "network_interface_id": "eni-stopped", "domain": "vpc", "tags": {}},
+    {"allocation_id": "eipalloc-0a1b2c3d4e5f60004", "region": "us-east-1", "steps": [1,2,3,4,5], "public_ip": "203.0.113.13", "association_id": "eipassoc-running", "instance_id": "i-0a1b2c3d4e5f60003", "network_interface_id": "eni-running", "domain": "vpc", "tags": {}}
+  ],
+  "instances": [
+    {"instance_id": "i-0a1b2c3d4e5f60001", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 200, "state": "stopped", "instance_type": "t3.large", "block_devices": [{"device_name": "/dev/xvda", "volume_id": "vol-0a1b2c3d4e5f61001", "status": "attached"}, {"device_name": "/dev/sdf", "volume_id": "vol-0a1b2c3d4e5f61002", "status": "attached"}], "tags": {"Name": "batch-worker"}, "platform": null},
+    {"instance_id": "i-0a1b2c3d4e5f60002", "region": "us-east-1", "steps": [1,2,3,4,5], "created_days_ago": 60, "state": "stopped", "instance_type": "t3.small", "block_devices": [{"device_name": "/dev/xvda", "volume_id": "vol-0a1b2c3d4e5f61003", "status": "attached"}], "tags": {"Name": "$(rm -rf /)"}, "platform": null},
+    {"instance_id": "i-0a1b2c3d4e5f60003", "region": "us-east-1", "steps": [1,2,3,4,5], "created_days_ago": 30, "state": "running", "instance_type": "t3.micro", "block_devices": [], "tags": {"Name": "web"}, "platform": null}
+  ],
+  "snapshots": [
+    {"snapshot_id": "snap-0a1b2c3d4e5f60001", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 300, "volume_id": "vol-0deadbeef0000001", "owner_id": "123456789012", "state": "completed", "volume_size_gib": 200, "storage_tier": "standard", "encrypted": true, "description": "Legacy database backup\nDo not delete without review", "tags": {}},
+    {"snapshot_id": "snap-0a1b2c3d4e5f60002", "region": "us-east-1", "steps": [1,2,3,4,5], "created_days_ago": 240, "volume_id": "vol-0deadbeef0000002", "owner_id": "123456789012", "state": "completed", "volume_size_gib": 80, "storage_tier": "standard", "encrypted": true, "description": "AMI root", "tags": {}},
+    {"snapshot_id": "snap-0a1b2c3d4e5f60003", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 400, "volume_id": "vol-0deadbeef0000003", "owner_id": "123456789012", "state": "completed", "volume_size_gib": 500, "storage_tier": "archive", "encrypted": false, "description": "Shared archive", "tags": {}},
+    {"snapshot_id": "snap-0a1b2c3d4e5f60004", "region": "eu-central-1", "steps": [1,2,3,4,5], "created_days_ago": 20, "volume_id": "vol-0a1b2c3d4e5f60001", "owner_id": "123456789012", "state": "completed", "volume_size_gib": 500, "storage_tier": "standard", "encrypted": true, "description": "Current source", "tags": {}},
+    {"snapshot_id": "snap-0a1b2c3d4e5f60005", "region": "us-east-1", "steps": [1,2,3,4,5], "created_days_ago": 10, "volume_id": "vol-ffffffff", "owner_id": "123456789012", "state": "completed", "volume_size_gib": 10, "storage_tier": "standard", "encrypted": false, "description": "Placeholder source", "tags": {}}
+  ],
+  "images": [
+    {"image_id": "ami-0a1b2c3d4e5f60001", "region": "us-east-1", "steps": [1,2,3,4,5], "name": "customer-api", "state": "available", "snapshot_ids": ["snap-0a1b2c3d4e5f60002"], "tags": {}}
+  ],
+  "snapshot_attributes": {
+    "snap-0a1b2c3d4e5f60003": {"shared_user_ids": ["210987654321"], "shared_groups": []}
+  },
+  "snapshot_locks": [],
+  "stack_resources": [
+    {"region": "eu-central-1", "steps": [1,2,3,4,5], "stack_name": "customer-api-prod", "stack_id": "arn:aws:cloudformation:eu-central-1:123456789012:stack/customer-api-prod/demo", "logical_id": "DataVolume", "physical_id": "vol-0a1b2c3d4e5f60002", "resource_type": "AWS::EC2::Volume", "resource_status": "CREATE_COMPLETE"}
+  ],
+  "faults": [
+    {"region": "ap-southeast-2", "method": "list_snapshots", "kind": "access_denied"}
+  ]
+}

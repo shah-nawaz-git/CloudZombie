@@ -1,0 +1,25 @@
+Metadata-Version: 2.4
+Name: cloudzombie-backend
+Version: 0.1.0
+Summary: Self-hosted AWS cleanup planner backend
+Requires-Python: >=3.12
+Requires-Dist: fastapi
+Requires-Dist: uvicorn[standard]
+Requires-Dist: sqlalchemy>=2.0
+Requires-Dist: alembic
+Requires-Dist: pydantic>=2
+Requires-Dist: pydantic-settings
+Requires-Dist: boto3
+Requires-Dist: botocore
+Requires-Dist: psycopg[binary]
+Requires-Dist: click
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: moto[cloudformation,ec2,sts]>=5; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: shellcheck-py; extra == "dev"
+Requires-Dist: httpx; extra == "dev"
+Requires-Dist: pyyaml; extra == "dev"
+Requires-Dist: types-PyYAML; extra == "dev"

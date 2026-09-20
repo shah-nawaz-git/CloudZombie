@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cloudzombie-backend"
+version = "0.1.0"
+description = "Self-hosted AWS cleanup planner backend"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "sqlalchemy>=2.0",
+  "alembic",
+  "pydantic>=2",
+  "pydantic-settings",
+  "boto3",
+  "botocore",
+  "psycopg[binary]",
+  "click",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "moto[ec2,sts,cloudformation]>=5",
+  "ruff",
+  "mypy",
+  "shellcheck-py",
+  "httpx",
+  "pyyaml",
+  "types-PyYAML",
+]
+
+[project.scripts]
+cloudzombie = "app.cli:cloudzombie"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+"app.pricing" = ["fallback_prices.json"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+disallow_untyped_defs = true
+ignore_missing_imports = true
+files = ["app"]
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
