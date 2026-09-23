@@ -1,3 +1,4 @@
+# Services bind to localhost only.
 # Demo mode: docker compose up --build
 # Live mode: docker compose -f docker-compose.yml -f docker-compose.live.yml up --build
 services:
@@ -31,7 +32,7 @@ services:
       timeout: 5s
       retries: 12
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
 
   frontend:
     build:
@@ -42,7 +43,7 @@ services:
       backend:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
 
 volumes:
   postgres_data:
