@@ -16,6 +16,17 @@ coverage.xml
 .env.*
 !.env.example
 
+# Secrets / credentials
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+.aws/
+credentials
+credentials.*
+
 # Node / Next.js
 node_modules/
 .next/

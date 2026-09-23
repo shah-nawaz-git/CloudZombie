@@ -17,6 +17,7 @@ AGENTS.md
 CLAUDE.md
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 *.p12
