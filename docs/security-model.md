@@ -44,9 +44,24 @@ This does not prove that the IAM principal itself lacks write permission. Attach
 
 ## CORS and configuration
 
-CORS origins come from `CLOUDZOMBIE_CORS_ORIGINS` and default to `http://localhost:3000`. The API allows `GET`, `POST`, and `PATCH`, permits only the `Content-Type` header, and does not allow credentials in CORS requests. The browser uses same-origin `/api/*` requests through the Next.js rewrite in normal deployment.
+CORS origins come from `CLOUDZOMBIE_CORS_ORIGINS` and default to `http://localhost:3000`. The API allows `GET`, `POST`, and `PATCH`, permits only the `Content-Type` header, and does not allow credentials in CORS requests. The browser uses same-origin `/api/*` requests in normal deployment; `frontend/proxy.ts` forwards them to `BACKEND_URL`, which is read when each request arrives rather than baked into the build.
 
 Configuration is loaded through Pydantic settings. Ignore-tag keys and values use a restricted character set. Application settings store behavior such as regions, thresholds, cache TTL, and ignore tags; they do not store AWS credentials.
+
+## Deployment and repository hygiene
+
+CloudZombie has no user authentication. It is a local, self-hosted tool, and the default deployment reflects that:
+
+| Control | Implementation |
+|---|---|
+| Localhost-only host bindings | `docker-compose.yml` publishes `127.0.0.1:3000` and `127.0.0.1:8000` only. Nothing listens on LAN interfaces by default. Remote deployment requires an explicit network or authentication layer and is outside the default configuration. The CI Docker job asserts the published bindings. |
+| Non-root containers | The backend image runs as `app` (UID 1000); the frontend standalone server runs as `nextjs` (UID 1001). The CI Docker job asserts both with `id -u`. |
+| Scanner credentials never used for remediation | The scanner principal carries only [iam-policy.json](iam-policy.json). Generated scripts require a separately authorized principal; see [remediation.md](remediation.md#scanner-credentials-are-not-remediation-credentials). |
+| No credentials in the repository | `.gitignore` excludes `.env`, `.env.*` (except `.env.example`), `*.pem`, `*.key`, `*.p12`, `*.pfx`, `*.jks`, `*.keystore`, `.aws/`, and `credentials*`. `.env.example` contains placeholders only. |
+| No credentials in Docker build contexts | Both `.dockerignore` files exclude the same credential patterns, so a local `.env` or `~/.aws` copy can never be baked into an image. |
+| Secret scanning | The `secret-scan` CI job runs `gitleaks/gitleaks-action` with full history on every push, pull request, and manual dispatch. `.gitleaks.toml` keeps the default rule set and allowlists only AWS resource-identifier shapes (`vol-`, `snap-`, `i-`, `eipalloc-`, ...) for the `generic-api-key` rule, because demo fixtures and tests reference those public identifiers next to words like `api_client`. GitHub's native secret scanning is not available on this private repository plan, so Gitleaks is the enforced control. |
+| Least-privilege CI | The workflow declares `permissions: contents: read` and no job requests more. |
+| Live-mode credential mounting | `docker-compose.live.yml` mounts `${HOME}/.aws` read-only and passes the standard boto3 environment variables through without copying them anywhere. |
 
 ## Threat model
 

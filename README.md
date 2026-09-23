@@ -45,7 +45,7 @@ _Scan history and partial-coverage visibility._
 
 ### 60-second demo walkthrough
 
-1. Open `http://localhost:3000`.
+1. Open `http://127.0.0.1:3000`.
 2. Point out the `DEMO MODE` indicator: no AWS credentials are required.
 3. Select **Run scan** and wait for the new, persistent, and resolved counts.
 4. Read the total **Estimated monthly cleanup opportunity** and the separate low-confidence snapshot exposure.
@@ -102,6 +102,16 @@ Next.js frontend -> FastAPI/services -> scanner/persistence/remediation
 - The script generator accepts validated account, region, resource, scan, and tag identifiers; it never receives finding titles, evidence, descriptions, or arbitrary tags.
 
 See [docs/security-model.md](docs/security-model.md) and [docs/remediation.md](docs/remediation.md).
+
+## Security
+
+- **Scanner credentials are read-only.** CloudZombie itself should run with the checked-in least-privilege policy in [docs/iam-policy.json](docs/iam-policy.json). The runtime allowlist and that policy are asserted equal by a test.
+- **Remediation needs a different principal.** Generated remediation scripts perform destructive AWS CLI operations and therefore cannot be executed using the CloudZombie read-only principal. A human must execute them separately using a deliberately authorized AWS principal with the minimum permissions required for that chosen operation, for example `sts:GetCallerIdentity`, `ec2:DescribeVolumes`, and `ec2:DeleteVolume` for one guarded volume deletion. Do not attach `ec2:*` and do not give CloudZombie write access. The per-script action list is in [docs/remediation.md](docs/remediation.md#scanner-credentials-are-not-remediation-credentials).
+- **No credentials are committed.** `.env.example` contains placeholders only. `.gitignore` and both `.dockerignore` files exclude `.env` files, private keys and keystores (`*.pem`, `*.key`, `*.p12`, `*.pfx`, `*.jks`, `*.keystore`), and `.aws/`.
+- **Standard credential chain.** Live mode uses the normal boto3/AWS CLI credential resolution (`AWS_PROFILE`, environment variables, shared files). Docker live mode mounts `${HOME}/.aws` read-only. Secret keys and session tokens are never persisted, logged, or returned by the API.
+- **Secret scanning in CI.** The `secret-scan` job runs Gitleaks over the full history on every push and pull request. `.gitleaks.toml` keeps the default rules and allowlists only AWS resource-ID shapes that appear in fixtures and tests.
+- **Localhost-only by default.** Compose publishes `127.0.0.1:3000` and `127.0.0.1:8000` only. CloudZombie has no user authentication; remote deployment requires an explicit network or authentication layer and is outside the default configuration.
+- **Non-root containers.** The backend runs as UID 1000 and the frontend as UID 1001; CI asserts both.
 
 ## Read-only AWS wrapper
 
@@ -178,13 +188,11 @@ EBS snapshots are incremental. AWS does not expose exact independently reclaimab
 
 ### Docker Compose
 
-Docker was not available on the author's Windows development machine, so these commands are defined and covered by the CI Docker job but were not executed locally:
-
 ```bash
 docker compose up --build
 ```
 
-Then open `http://localhost:3000`.
+Then open `http://127.0.0.1:3000`. PostgreSQL, the backend, and the frontend start with health checks and dependency ordering; migrations apply automatically on first start and demo history is seeded once. Both published ports bind to `127.0.0.1` only.
 
 ### Without Docker
 
@@ -231,15 +239,23 @@ export AWS_PROFILE=my-read-only-profile
 docker compose -f docker-compose.yml -f docker-compose.live.yml up --build
 ```
 
-The live override also passes through `AWS_REGION_SELECTION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`, and mounts `${HOME}/.aws` read-only. The UI displays the verified account and principal ARN. Secret keys and session tokens are never persisted, logged, or returned.
+The live override also passes through `AWS_REGION_SELECTION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`, and mounts `${HOME}/.aws` read-only. The UI displays the verified account, principal ARN, and a `LIVE AWS` indicator. Secret keys and session tokens are never persisted, logged, or returned.
 
-Live mode has been exercised only against moto and botocore Stubber in this repository's tests. It has not been exercised against a live AWS account.
+**Live AWS validation: not performed.** Live mode has been exercised only against moto and botocore Stubber in this repository's tests; no authorized AWS account was available during release verification. To validate it yourself against a non-production account with only the policy above attached:
+
+```bash
+aws sts get-caller-identity --profile <read-only-profile>
+export AWS_PROFILE=<read-only-profile>
+docker compose -f docker-compose.yml -f docker-compose.live.yml up --build
+```
+
+Then confirm the account ID, principal ARN, and `LIVE AWS` indicator in the UI, run a scan, and review region coverage. The application performs no write calls; CloudTrail will show only the twelve `Describe`/`List`/`Get` operations listed above.
 
 ## Docker setup
 
-Compose defines PostgreSQL, the FastAPI backend, and the standalone Next.js frontend with health checks and dependency ordering. The backend image runs as UID 1000, waits for the database, applies Alembic migrations, and starts Uvicorn. The frontend proxies same-origin `/api/*` requests to the backend.
+Compose defines PostgreSQL, the FastAPI backend, and the standalone Next.js frontend with health checks and dependency ordering. The backend image runs as UID 1000, waits for the database, applies Alembic migrations, and starts Uvicorn. The frontend image runs as UID 1001 and forwards same-origin `/api/*` requests to `BACKEND_URL` at request time (`frontend/proxy.ts`), so the same image works with any backend address. Host ports are published on `127.0.0.1` only.
 
-Docker Compose has not been run on the author's Windows machine. The workflow is configured to build and exercise it in CI after the repository is pushed.
+The CI `docker` job builds both images from scratch, starts the stack, asserts the non-root users and loopback bindings, runs the API smoke flow and two consecutive demo scans with observation-history assertions, measures read latency, runs the Playwright flow, and checks that data survives `docker compose restart` and `down`/`up`.
 
 ## Testing
 
@@ -271,24 +287,34 @@ cd frontend
 E2E_BASE_URL=http://localhost:3000 npx playwright test
 ```
 
-The current verified counts are 236 backend pytest tests, 14 Vitest tests, and 1 Playwright specification. Recount them before relying on these figures.
-
 The cross-platform aggregate script assumes Bash:
 
 ```bash
 scripts/check-all.sh
 ```
 
+### Verified in the release run
+
+Measured in the final verification run (clean virtual environment and `npm ci`, plus the GitHub Actions run on `main`):
+
+- Backend: 236 pytest tests passed, 0 failed, 0 skipped, 94% line coverage; Ruff lint and format checks, mypy strict on `app`. The CI job runs the same suite against PostgreSQL 16 as well as SQLite.
+- Frontend: 14 Vitest tests passed; ESLint, Prettier check, `tsc --noEmit`, and the production build passed.
+- Generated scripts: all 7 golden scripts, `backend/entrypoint.sh`, and `scripts/*.sh` pass ShellCheck at style severity.
+- Docker Compose: `docker compose config`, image builds, healthy start, non-root users, loopback bindings, API smoke flow, two-scan observation-history assertions, read-latency loop, restart and `down`/`up` persistence, and teardown, all in CI.
+- Playwright: 1 end-to-end demo flow, run against the Compose stack in CI, including page-error and HTTP 5xx assertions.
+- Secret scanning: Gitleaks reports no leaks across the full Git history and the tracked working tree.
+- Dependency audits: `pip-audit` and `npm audit` report no known vulnerabilities.
+- Not performed: live AWS. See [AWS mode](#aws-mode).
+
 ## CI
 
-`.github/workflows/ci.yml` defines:
+`.github/workflows/ci.yml` runs with `permissions: contents: read` and defines:
 
+- `secret-scan`: Gitleaks over the full history.
 - `backend`: PostgreSQL and SQLite tests, Ruff, formatting, mypy, coverage artifact.
 - `frontend`: ESLint, Prettier check, TypeScript, Vitest, production build.
 - `shellcheck`: golden scripts, backend entrypoint, and repository scripts.
-- `docker`: Compose build/start, health/API checks, Playwright Chromium flow, logs on failure, cleanup.
-
-CI configuration exists, but this documentation does not claim a successful remote CI run before the branch is pushed.
+- `docker`: Compose build/start, non-root and loopback assertions, API smoke flow and observation-history checks, latency loop, Playwright Chromium flow, restart persistence, logs artifact, cleanup.
 
 ## Known limitations
 
@@ -304,7 +330,7 @@ CI configuration exists, but this documentation does not claim a successful remo
 - CloudZombie cannot determine business intent.
 - Remediation requires human judgment.
 - A read-only application architecture does not prove the configured IAM credentials lack write permission.
-- Docker was not verified on the author's Windows machine; the Docker flow is configured for CI verification.
+- No user authentication; the default deployment binds to localhost only.
 - Live AWS was not exercised; provider behavior is covered with moto and Stubber.
 
 ## Roadmap

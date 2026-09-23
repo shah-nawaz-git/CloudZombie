@@ -2,6 +2,25 @@
 
 CloudZombie never runs remediation. It builds a plan from a stored finding and may generate a Bash artifact for a human to review and execute separately.
 
+## Scanner credentials are not remediation credentials
+
+CloudZombie itself should run with the checked-in least-privilege read-only IAM policy in [iam-policy.json](iam-policy.json). That principal can describe resources and read prices, stacks, and its own identity. It cannot delete, release, create, or tag anything, and the application's operation guard would reject such a call before it left the process.
+
+Generated remediation scripts perform destructive AWS CLI operations and therefore cannot be executed using the CloudZombie read-only principal. A human must execute them separately using a deliberately authorized AWS principal with the minimum permissions required for that chosen operation. Do not widen the CloudZombie principal to make a script work; that would turn a read-only scanner into a write-capable one.
+
+The actions each script actually calls, taken from the checked golden files in `backend/tests/golden/`:
+
+| Script | Required actions | Additionally required when the optional pre-deletion snapshot is taken |
+|---|---|---|
+| Guarded EBS deletion (`ebs_delete.sh`) | `sts:GetCallerIdentity`, `ec2:DescribeVolumes` (state, attachments, and tags are read from this call), `ec2:DeleteVolume` | `ec2:CreateSnapshot`, `ec2:DescribeSnapshots` (used by `aws ec2 wait snapshot-completed`) |
+| Guarded Elastic IP release (`eip_release.sh`) | `sts:GetCallerIdentity`, `ec2:DescribeAddresses`, `ec2:ReleaseAddress` | Not applicable |
+| Bulk script (`bulk.sh`) | The union of the rows above for the included resource kinds | Not applicable; bulk mode never takes snapshots |
+| Investigation scripts | `sts:GetCallerIdentity` plus the describe calls printed in the script: `ec2:DescribeVolumes`, `ec2:DescribeSnapshots`, `ec2:DescribeAddresses`, `ec2:DescribeInstances`, `ec2:DescribeImages`, `ec2:DescribeSnapshotAttribute`, `ec2:DescribeLockedSnapshots` as applicable | Not applicable |
+
+Scope the grant as narrowly as the account allows: the single region printed in the script header and, where the action supports resource-level permissions, the specific volume or allocation ID. Use a separate profile for the operator, for example `AWS_PROFILE=cleanup-operator`, and remove the grant when the cleanup is finished.
+
+Do not attach a broad policy such as `ec2:*` for remediation, and do not give CloudZombie itself write access. The scanner policy and the remediation grant are different principals with different lifetimes.
+
 ## Cleanup plan
 
 A cleanup plan contains:
@@ -100,7 +119,7 @@ Bulk mode does not offer pre-deletion snapshots.
 
 1. Download the script from the finding page or raw API endpoint.
 2. Read the complete file and compare account, region, resource, checks, and warnings with the cleanup plan.
-3. Configure the AWS CLI for the same account shown in the header.
+3. Configure the AWS CLI with a deliberately authorized remediation principal for the same account shown in the header. This is not the CloudZombie read-only principal; see [Scanner credentials are not remediation credentials](#scanner-credentials-are-not-remediation-credentials).
 4. Run it separately:
 
 ```bash
