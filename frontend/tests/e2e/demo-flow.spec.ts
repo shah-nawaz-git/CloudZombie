@@ -1,5 +1,14 @@
 import { test, expect } from "@playwright/test";
 test("demo cleanup planning flow", async ({ page }) => {
+  const pageErrors: string[] = [];
+  const serverErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("response", (response) => {
+    if (response.status() >= 500) {
+      serverErrors.push(`${response.status()} ${response.url()}`);
+    }
+  });
+
   await page.goto("/");
   await expect(page.getByText("DEMO MODE")).toBeVisible();
   await page.getByRole("button", { name: "Run scan" }).click();
@@ -28,4 +37,9 @@ test("demo cleanup planning flow", async ({ page }) => {
   await expect(page.getByText("PARTIAL").first()).toBeVisible();
   await page.locator("tbody tr").first().getByRole("link").click();
   await expect(page.getByText("ec2:DescribeSnapshots").first()).toBeVisible();
+  await page.getByRole("link", { name: "Settings" }).click();
+  await expect(page.getByRole("heading", { name: "Runtime mode" })).toBeVisible();
+
+  expect(pageErrors).toEqual([]);
+  expect(serverErrors).toEqual([]);
 });
